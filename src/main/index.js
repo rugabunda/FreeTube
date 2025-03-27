@@ -258,7 +258,7 @@ function runApp() {
       app.dock.setMenu(dockMenu)
     })
   }
-  
+
   // disable electron warning
   process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true'
   const isDebug = process.argv.includes('--debug')
