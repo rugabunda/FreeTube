@@ -240,6 +240,26 @@ function runApp() {
       }]
     }])
   }
+
+// If in Mac, add macOS Dock menu with 'New Window' option
+if (process.platform === 'darwin') {
+  const dockMenu = Menu.buildFromTemplate([
+    {
+      label: 'New Window',
+      click: () => {
+        createWindow({
+          replaceMainWindow: false,
+          showWindowNow: true
+        })
+      }
+    }
+  ])
+  
+  app.whenReady().then(() => {
+    app.dock.setMenu(dockMenu)
+  })
+}
+
   // disable electron warning
   process.env.ELECTRON_DISABLE_SECURITY_WARNINGS = 'true'
   const isDebug = process.argv.includes('--debug')
