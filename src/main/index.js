@@ -225,7 +225,6 @@ function runApp() {
     }
   })
 
-  // If in windows, add Windows Jump List task 'New Window'
   if (process.platform === 'win32') {
     app.setJumpList([{
       type: 'tasks',
@@ -241,7 +240,6 @@ function runApp() {
     }])
   }
 
-  // If in Mac, add macOS Dock menu with 'New Window' option
   if (process.platform === 'darwin') {
     const dockMenu = Menu.buildFromTemplate([
       {
