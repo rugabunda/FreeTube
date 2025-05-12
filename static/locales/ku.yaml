@@ -1,5 +1,11 @@
 # Put the name of your locale in the same language
-Locale Name: 'کوردی ناوەڕاست'
+Locale Name: 'Ev rêz divê bi heman navê zimanê ku hûn werdigerînin were wergerandin.
+
+
+  Mînak: Ji bo Fransî, wergera rast Français e.
+
+
+  Peyva "Îngilîzî" wernegerînin zimanê xwe.'
 
 # Webkit Menu Bar
 File: 'پەڕگە'
@@ -37,10 +43,16 @@ Global:
 # Search Bar
   Live: ژیاوازی
   Shorts: شورتەکان
-  Community: کۆمەڵگا
   Counts:
     Video Count: 1 ڤیدیۆ | {count} ڤیدیۆکان
+    Subscriber Count: 1 بەشداربوو | {ژماردن} بەشداربووان
+    Channel Count: 1 کەناڵ | {ژماردن} کەناڵەکان
+    View Count: 1 بینین | {ژماردن} بینینەکان
+    Like Count: 1 لایک | {ژماردن} لایک
+    Comment Count: 1 کۆمێنت | {ژماردن} کۆمێنتەکان
+    Watching Count: 1 سەیرکردنی | {ژماردن} سەیرکردن
   Videos: ویدیوەکان
+  Posts: پۆستەکان
 Search / Go to URL: 'گەڕان / بڕۆ بۆ لینک'
   # In Filter Button
 Search Filters:
@@ -71,6 +83,7 @@ Search Filters:
     Short (< 4 minutes): 'کورت (< ٤ خولەک)'
     Long (> 20 minutes): 'درێژ (> ٢٠ خولەک)'
   # On Search Page
+    Medium (4 - 20 minutes): مامناوەند (٤ - ٢٠ خولەک)
   Search Results: 'ئەنجامی گەڕان'
   Fetching results. Please wait: 'هێنانی ئەنجامەکان. تکایە چاوەڕێکە'
   Fetch more results: 'ئەنجامی زیاتر بێنە'
@@ -79,6 +92,15 @@ Search Filters:
     Location: شوێن
     Features: تەنیاکان
     Creative Commons: کۆمەڵگەی خەڵکی خلاقی
+    Live: ژیان
+    4K: 4K
+    HD: HD
+    Subtitles: ژێرنووس
+    VR180: VR180
+    360 Video: 360 ڤیدیۆ
+    HDR: HDR
+    3D: 3D
+  There are no more results for this search: هیچ ئەنجامێکی تر بۆ ئەم گەڕانە نییە
 Subscriptions:
     # On Subscriptions Page
   Subscriptions: 'بەشداریکراوەکان'
@@ -94,8 +116,16 @@ Subscriptions:
   Empty Posts: کانالەکانت کە ئەم ڕووداوەی تۆ ئەم شتانی نییە.
   Disabled Automatic Fetching: تۆ پەیوەندیدانی خۆکارەکان بەرزکردنەوەی پەیوەندیدانەکان
     بەرزکردووتەوە. بەرزکردنەوەی پەیوەندیدانەکان بۆ بینینی ئەمانە لێرە.
+  All Subscription Tabs Hidden: هەموو تابەکانی بەشداریکردن شاراوەن. بۆ بینینی ناوەڕۆک
+    لێرەدا، تکایە هەندێک تاب لە بەشی "{subsection}" لە "{settingsSection}" بشارەوە.
+  Subscriptions Tabs: تابەکانی بەشداریکردن
 Trending:
   Trending: 'زۆر باسکراو'
+  Default: بنەڕەتی
+  Trending Tabs: تابەکانی ترێندنگ
+  Movies: فیلمەکان
+  Music: مووزیک
+  Gaming: یاریکردن
 Most Popular: 'بەناوبانگترین'
 Playlists: 'پلەیلیست'
 User Playlists:
@@ -105,9 +135,21 @@ User Playlists:
       You haven't selected any playlist yet.: هێشتا هیچ لیستێکی پەخشکردنت دیاری نەکردووە.
       "{videoCount} video(s) added to 1 playlist": 1 ڤیدیۆ زیادکرا بۆ 1 لیستی پەخشکردن
         | {videoCount} ڤیدیۆکان زیادکران بۆ 1 لیستی پەخشکردن
+      "{videoCount} video(s) added to {playlistCount} playlists": v$1 ڤیدیۆ زیادکرا
+        بۆ {playlistCount} پلەی لیستەکان | ڤیدیۆکانی {videoCount} زیادکراون بۆ لیستەکانی
+        پلەی {playlistCount}
     Select a playlist to add your N videos to: لیستێکی پەخشکردن دەسنیشان بکە بۆ زیادکردنی
       ڤیدیۆکەت بۆ | لیستێکی پەخشکردن دەسنیشان بکە بۆ زیادکردنی ڤیدیۆکانی {videoCount}
       بۆی
+    Allow Adding Duplicate Video(s): ڕێگە بدە بە زیادکردنی ڤیدیۆ(ەکان)ی دووبارە
+    "{videoCount}/{totalVideoCount} Videos Already Added": '{videoCount}/{totalVideoCount}
+      ڤیدیۆکان پێشتر زیادکراون'
+    Added {count} Times: “پێشتر زیاد کراوە | زیادکرا {ژمارە} کاتەکان
+    Save: هەڵگرتن
+    N playlists selected: '{playlistCount} هەڵبژێردراوە'
+    Search in Playlists: لە پلەی لیستەکاندا بگەڕێ
+    "{videoCount}/{totalVideoCount} Videos Will Be Added": “{videoCount}/{totalVideoCount}
+      ڤیدیۆکان زیاد دەکرێن
   Export Playlist: ئەم پەلیەیە بەرز بکەوە
   SinglePlaylistView:
     Toast:
@@ -135,6 +177,15 @@ User Playlists:
       Video has been removed. Click here to undo.: ڤیدیۆ لابرا. کرتە لێرە بکە بۆ پاشگەزبوونەوە.
       This video cannot be moved up.: ئەم ڤیدیۆیە ناتوانرێت بەرز بکرێت.
       This video cannot be moved down.: ئەم ویدیوە ناتوانرێت بەرەو خوار بەرز بکرێت.
+      Reverted to use {oldPlaylistName} for quick bookmark: گەڕێنرایەوە بۆ بەکارهێنانی
+        {oldPlaylistName} بۆ نیشاندانی خێرا
+      Playlist {playlistName} has been deleted.: پلەی لیست {playlistName} سڕاوەتەوە.
+      "{videoCount} video(s) have been removed": 1 ڤیدۆ لابرا | ڤیدیۆکانی {videoCount}
+        لابراون
+      Playlist has been updated.: …پلەی لیست نوێ کراوەتەوە.
+      There were no videos to remove.: هیچ ڤیدیۆیەک نەبوو بۆ لابردنی.
+      This playlist does not exist: ئەم پلەی لیستە بوونی نییە
+    Search for Videos: گەڕان بەدوای ڤیدیۆدا
   CreatePlaylistPrompt:
     Toast:
       There is already a playlist with this name. Please pick a different name.: لیستێکی
@@ -143,6 +194,8 @@ User Playlists:
         بە سەرکەوتوویی دروستکرا.
       There was an issue with creating the playlist.: کێشەیەک هەبوو لە دروستکردنی
         لیستی پەخشکردن.
+    Create: دروستکردن
+    New Playlist Name: ناوی پلەیلیستی نوێ
   Enable Quick Bookmark With This Playlist: بەکار هێنانی بەرگەی خێرا لەگەڵ ئەم پەلییەستەیە
   Remove Watched Videos: فیدیۆی تماشا کراوەکان لابەرەوە
   Are you sure you want to remove {playlistItemCount} duplicate videos from this playlist? This cannot be undone: تۆ
@@ -167,12 +220,40 @@ User Playlists:
     نییە.
   Are you sure you want to delete this playlist? This cannot be undone: تۆ دڵنیایت
     ئەو پەلیستە بسڕی؟ ئەمە ناتوانرێت بەرەوپێش بەرگردرێت.
+  Search bar placeholder: گەڕان بەدوای پلەی لیستەکاندا
+  Cancel: ڕەتکردنەوە
+  Sort By:
+    NameDescending: Z-A
+    LatestUpdatedFirst: بەم دواییە نوێکراوەتەوە
+    LatestPlayedFirst: بەم دواییە یاری کراوە
+    NameAscending: A-Z
+    LatestCreatedFirst: بەم دواییە دروستکراوە
+    EarliestCreatedFirst: سەرەتاییترین دروستکراوە
+    EarliestUpdatedFirst: زووترین نوێکراوەتەوە
+    EarliestPlayedFirst: زووترین یاری
+  TotalTimePlaylist: 'کۆی گشتی کات: {ماوە}'
+  Playlists with Matching Videos: پلەی لیستەکان لەگەڵ ڤیدیۆی هاوتا
+  Edit Playlist Info: دەستکاریکردنی زانیاری پلەی لیست
+  Delete Playlist: سڕینەوەی پلەی لیست
+  Add to Favorites: زیادکردن بۆ {playlistName}
+  Playlist Name: ناوی پلەی لیست
+  Save Changes: گۆڕانکارییەکان پاشەکەوت بکە
+  Copy Playlist: پلەی لیست کۆپی بکە
+  Create New Playlist: دروستکردنی پلەی لیستێکی نوێ
+  Add to Playlist: زیادکردن بۆ پلەی لیست
+  Remove from Favorites: لە {playlistName} دەربهێنە
+  Playlist Description: وەسفکردنی پلەی لیست
+  Move Video Up: ڤیدیۆ بگوازەرەوە بۆ سەرەوە
+  Move Video Down: ڤیدیۆ بگوازەرەوە بۆ خوارەوە
+  Remove from Playlist: لە پلەی لیست دەربهێنە
 History:
   # On History Page
   History: 'مێژوو'
   Watch History: 'لیستی سەیرکراو'
   Your history list is currently empty.: 'لیستی سەیرکراوەکانت بەتاڵە.'
   Empty Search Message: هیچ ڤیدیۆیەک لە مێژووەکەت نییە کە لەگەڵ گەڕانەکەت بگونجێت
+  Search bar placeholder: “گەڕان لە مێژوودا
+  Case Sensitive Search: گەڕانی هەستیاری گەورە و بچووک
 Settings:
   # On Settings Page
   Settings: 'دەستکاریکردن'
@@ -198,11 +279,19 @@ Settings:
     No default instance has been set: هیچ حاڵەتێکی بنەڕەت دانەنراوە
     Preferred API Backend:
       Preferred API Backend: پشتەوەی پەسەندکراوی API
+      Invidious API: API ی ئینڤیدیۆس
+      Local API: API ناوخۆیی
     Video View Type:
       Video View Type: جۆری پیشاندانی ڤیدیۆ
+      Grid: تۆڕ
+      List: لیست
     The currently set default instance is {instance}: نمونەی بنەڕەتی دانراوی ئێستاکە
       بریتییە لە {instance}
     Clear Default Instance: سڕینەوەی نموونەی گریمانەیی
+    Thumbnail Preference:
+      Thumbnail Preference: هەڵبژاردنی وێنەی بچووک
+    Default Landing Page: لاپەڕەی نیشتنەوەی پێشوەختە
+    System Default: سیستەمی پێشوەختە
   Theme Settings:
     Hide FreeTube Header Logo: شاردنەوەی لۆگۆی سەرپەڕەی FreeTube
     Hide Side Bar Labels: شاردنەوەی پێناسەکانی شریتی تەنیشت
@@ -335,6 +424,7 @@ Settings:
   Subscription Settings:
     'Limit the number of videos displayed for each channel': سنوردارکردنی ژمارەی ڤیدیۆکان
       بۆ هەر کەناڵێک
+  Sort Settings Sections (A-Z): ڕێکخستنەکانی ڕیزبەندی بەشەکان (A-Z)
 About:
   #On About page
   About: 'دەربارە'
@@ -424,6 +514,11 @@ Are you sure you want to open this link?: دڵنیایت دەتەوێت ئەم �
 Open New Window: کردنەوەی پەنجەرەیەکی نوێ
 Channels:
   Empty: لیست چەنالی تۆ ئێستا خالیە.
+  Search bar placeholder: گەڕان لە کەناڵەکاندا
+  Unsubscribe Prompt: ئایا دڵنیای کە دەتەوێت بەشداریکردن لە "{channelName}" هەڵبوەشێنیتەوە؟
+  Channels: کەناڵەکان
+  Title: لیستی کەناڵەکان
+  Count: '{ژمارە} کەناڵ(ەکان) دۆزرایەوە.'
 Right-click or hold to see history: کلیک لە ڕاست یان هەڵبژاردن بەدوورەوە بۆ بینینی
   مێژووی
 Search Listing:
@@ -431,6 +526,11 @@ Search Listing:
     New: نوێ
     Subtitles: زیرنویسەکان
     Closed Captions: نیشانی پەیوەندیدا بەرزراوەکان
+    8K: 8K
+    VR180: VR180
+    360 Video: 360°
+    4K: 4K
+    3D: 3D
 Close Banner: بەندەرەکە بند بکە
 Search Bar:
   Clear Input: وەرگێرانی پەیوەندیدار
@@ -440,3 +540,9 @@ KeyboardShortcutPrompt:
   Zoom In: زووم کردنە ناوەوە
   Zoom Out: زووم کردنە دەرەوە
   Fullscreen: شاشەکەت پرکەرەوە
+Feed:
+  Feed Last Updated: '{feedName} فید دوایین نوێکردنەوە: {بەروار}'
+  Refresh Feed: نوێکردنەوە {ناوی بەشداریکردن}
+More: زیاتر
+Search character limit: پرسیاری گەڕان لە سەرووی سنووری کاراکتەری {searchCharacterLimit}
+  دایە

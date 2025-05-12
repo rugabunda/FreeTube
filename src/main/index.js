@@ -57,13 +57,12 @@ Options:
 
 function runApp() {
   /** @type {Set<string>} */
-  let ALLOWED_RENDERER_FILES
+  const ALLOWED_RENDERER_FILES = process.env.NODE_ENV === 'production'
+    // __FREETUBE_ALLOWED_PATHS__ is replaced by the injectAllowedPaths.mjs script
+    ? new Set(__FREETUBE_ALLOWED_PATHS__)
+    : new Set()
 
   if (process.env.NODE_ENV === 'production') {
-    // __FREETUBE_ALLOWED_PATHS__ is replaced by the injectAllowedPaths.mjs script
-    // eslint-disable-next-line no-undef
-    ALLOWED_RENDERER_FILES = new Set(__FREETUBE_ALLOWED_PATHS__)
-
     protocol.registerSchemesAsPrivileged([{
       scheme: 'app',
       privileges: {
@@ -751,8 +750,7 @@ function runApp() {
       darkTheme: nativeTheme.shouldUseDarkColors,
       icon: process.env.NODE_ENV === 'development'
         ? path.join(__dirname, '../../_icons/iconColor.png')
-        /* eslint-disable-next-line n/no-path-concat */
-        : `${__dirname}/_icons/iconColor.png`,
+        : path.join(__dirname, '../_icons/iconColor.png'),
       autoHideMenuBar: true,
       // useContentSize: true,
       webPreferences: {
@@ -1045,20 +1043,6 @@ function runApp() {
     sender.executeJavaScript('document.querySelector("video.player").ui.getControls().togglePiP()', true)
   })
 
-  ipcMain.handle(IpcChannels.SHOW_SAVE_DIALOG, async ({ sender }, options) => {
-    const senderWindow = findSenderWindow(sender)
-    if (senderWindow) {
-      return await dialog.showSaveDialog(senderWindow, options)
-    }
-    return await dialog.showSaveDialog(options)
-  })
-
-  function findSenderWindow(sender) {
-    return BrowserWindow.getAllWindows().find((window) => {
-      return window.webContents.id === sender.id
-    })
-  }
-
   ipcMain.handle(IpcChannels.GET_SCREENSHOT_FALLBACK_FOLDER, (event) => {
     if (!isFreeTubeUrl(event.senderFrame.url)) {
       return
@@ -1113,18 +1097,24 @@ function runApp() {
     })
   })
 
-  ipcMain.handle(IpcChannels.WRITE_SCREENSHOT, async (event, filename, arrayBuffer) => {
-    if (!isFreeTubeUrl(event.senderFrame.url) || typeof filename !== 'string' || !(arrayBuffer instanceof ArrayBuffer)) {
+  ipcMain.handle(IpcChannels.WRITE_TO_DEFAULT_FOLDER, async (event, kind, filename, arrayBuffer) => {
+    if (
+      !isFreeTubeUrl(event.senderFrame.url) ||
+      (kind !== DefaultFolderKind.DOWNLOADS && kind !== DefaultFolderKind.SCREENSHOTS) ||
+      typeof filename !== 'string' ||
+      !(arrayBuffer instanceof ArrayBuffer)) {
       return
     }
 
-    const screenshotFolderPath = await baseHandlers.settings._findOne('screenshotFolderPath')
+    const settingId = kind === DefaultFolderKind.DOWNLOADS ? 'downloadFolderPath' : 'screenshotFolderPath'
+
+    const folderPath = await baseHandlers.settings._findOne(settingId)
 
     let directory
-    if (screenshotFolderPath && screenshotFolderPath.value.length > 0) {
-      directory = screenshotFolderPath.value
+    if (typeof currentPath === 'string' && folderPath.value.length > 0) {
+      directory = folderPath.value
     } else {
-      directory = path.join(app.getPath('pictures'), 'FreeTube')
+      directory = path.join(app.getPath(kind === DefaultFolderKind.DOWNLOADS ? 'downloads' : 'pictures'), 'FreeTube')
     }
 
     directory = path.normalize(directory)
@@ -1141,7 +1131,7 @@ function runApp() {
 
       await asyncFs.writeFile(filePath, new DataView(arrayBuffer))
     } catch (error) {
-      console.error('WRITE_SCREENSHOT failed', error)
+      console.error('WRITE_TO_DEFAULT_FOLDER failed', error)
       // throw a new error so that we don't expose the real error to the renderer
       throw new Error('Failed to save')
     }
