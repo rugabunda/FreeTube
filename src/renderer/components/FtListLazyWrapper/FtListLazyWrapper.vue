@@ -1,9 +1,8 @@
 <template>
   <div
     v-if="showResult"
-    v-observe-visibility="firstScreen ? false : {
-      callback: onVisibilityChanged,
-      once: true,
+    v-observe-visibility="visible ? false : {
+      callback: onVisibilityChanged
     }"
     :class="{
       grid: layout === 'grid',
@@ -61,7 +60,7 @@ import { computed, ref } from 'vue'
 
 import FtListVideo from '../ft-list-video/ft-list-video.vue'
 import FtListChannel from '../FtListChannel/FtListChannel.vue'
-import FtListPlaylist from '../ft-list-playlist/ft-list-playlist.vue'
+import FtListPlaylist from '../FtListPlaylist/FtListPlaylist.vue'
 import FtCommunityPost from '../FtCommunityPost/FtCommunityPost.vue'
 import FtListHashtag from '../FtListHashtag/FtListHashtag.vue'
 
@@ -259,7 +258,9 @@ const visible = ref(props.firstScreen)
  * @param {boolean} isVisible
  */
 function onVisibilityChanged(isVisible) {
-  visible.value = isVisible
+  if (isVisible) {
+    visible.value = isVisible
+  }
 }
 
 /**

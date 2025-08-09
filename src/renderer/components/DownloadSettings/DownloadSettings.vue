@@ -56,11 +56,11 @@ import FtFlexBox from '../ft-flex-box/ft-flex-box.vue'
 import FtInput from '../ft-input/ft-input.vue'
 import FtSelect from '../ft-select/ft-select.vue'
 import FtSettingsSection from '../FtSettingsSection/FtSettingsSection.vue'
-import FtToggleSwitch from '../ft-toggle-switch/ft-toggle-switch.vue'
+import FtToggleSwitch from '../FtToggleSwitch/FtToggleSwitch.vue'
 
 import store from '../../store/index'
 
-import { DefaultFolderKind, IpcChannels } from '../../../constants'
+import { DefaultFolderKind } from '../../../constants'
 
 const DOWNLOAD_BEHAVIOR_VALUES = [
   'download',
@@ -99,8 +99,7 @@ const downloadFolderPath = computed(() => store.getters.getDownloadFolderPath)
 
 function chooseDownloadFolder() {
   if (process.env.IS_ELECTRON) {
-    const { ipcRenderer } = require('electron')
-    ipcRenderer.send(IpcChannels.CHOOSE_DEFAULT_FOLDER, DefaultFolderKind.DOWNLOADS)
+    window.ftElectron.chooseDefaultFolder(DefaultFolderKind.DOWNLOADS)
   }
 }
 </script>

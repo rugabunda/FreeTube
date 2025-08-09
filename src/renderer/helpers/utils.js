@@ -1,4 +1,3 @@
-import { IpcChannels } from '../../constants'
 import i18n from '../i18n/index'
 import router from '../router/index'
 import { nextTick } from 'vue'
@@ -167,13 +166,15 @@ export const ToastEventBus = new EventTarget()
  * @param {string} message
  * @param {number} time
  * @param {Function} action
+ * @param {AbortSignal} abortSignal
  */
-export function showToast(message, time = null, action = null) {
+export function showToast(message, time = null, action = null, abortSignal = null) {
   ToastEventBus.dispatchEvent(new CustomEvent('toast-open', {
     detail: {
       message,
       time,
-      action
+      action,
+      abortSignal,
     }
   }))
 }
@@ -212,16 +213,7 @@ export async function copyToClipboard(content, { messageOnSuccess = null, messag
  * @param {string} url the URL to open
  */
 export async function openExternalLink(url) {
-  if (process.env.IS_ELECTRON) {
-    const ipcRenderer = require('electron').ipcRenderer
-    const success = await ipcRenderer.invoke(IpcChannels.OPEN_EXTERNAL_LINK, url)
-
-    if (!success) {
-      showToast(i18n.t('Blocked opening potentially unsafe URL', { url }))
-    }
-  } else {
-    window.open(url, '_blank')
-  }
+  window.open(url, '_blank', 'noreferrer')
 }
 
 /**
@@ -235,9 +227,7 @@ export async function openExternalLink(url) {
  */
 export function openInternalPath({ path, query = undefined, doCreateNewWindow, searchQueryText = null }) {
   if (process.env.IS_ELECTRON && doCreateNewWindow) {
-    const { ipcRenderer } = require('electron')
-
-    ipcRenderer.send(IpcChannels.CREATE_NEW_WINDOW, path, query, searchQueryText)
+    window.ftElectron.openInNewWindow(path, query, searchQueryText)
   } else {
     router.push({
       path,
@@ -541,8 +531,7 @@ export function replaceFilenameForbiddenChars(filenameOriginal) {
 export async function getSystemLocale() {
   let locale
   if (process.env.IS_ELECTRON) {
-    const { ipcRenderer } = require('electron')
-    locale = await ipcRenderer.invoke(IpcChannels.GET_SYSTEM_LOCALE)
+    locale = await window.ftElectron.getSystemLocale()
   } else {
     if (navigator && navigator.language) {
       locale = navigator.language
@@ -1012,5 +1001,30 @@ export function debounce(func, wait) {
       timeout = null
       func.apply(context, args)
     }, wait)
+  }
+}
+
+/**
+ * @template {Function} T
+ * @param {T} func
+ * @param {number} wait
+ * @returns {T}
+ */
+export function throttle(func, wait) {
+  let isWaiting
+
+  // Using a fully fledged function here instead of an arrow function
+  // so that we can get `this` and pass it onto the original function.
+  // Vue components using the options API use `this` alot.
+  return function (...args) {
+    const context = this
+    if (!isWaiting) {
+      func.apply(context, args)
+
+      isWaiting = true
+      setTimeout(() => {
+        isWaiting = false
+      }, wait)
+    }
   }
 }

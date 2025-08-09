@@ -41,7 +41,7 @@
       <div class="select-container">
         <FtSelect
           v-if="showVideoSortBy"
-          v-show="currentTab === 'videos' && latestVideos.length > 0"
+          v-show="currentTab === 'videos' && (showFetchMoreButton || filteredVideos.length > 1)"
           :value="videoSortBy"
           :select-names="videoLiveShortSelectNames"
           :select-values="videoLiveShortSelectValues"
@@ -51,7 +51,7 @@
         />
         <FtSelect
           v-if="!hideChannelShorts && showShortSortBy"
-          v-show="currentTab === 'shorts' && latestShorts.length > 0"
+          v-show="currentTab === 'shorts' && (showFetchMoreButton || filteredShorts.length > 1)"
           :value="shortSortBy"
           :select-names="videoLiveShortSelectNames"
           :select-values="videoLiveShortSelectValues"
@@ -61,7 +61,7 @@
         />
         <FtSelect
           v-if="!hideLiveStreams && showLiveSortBy"
-          v-show="currentTab === 'live' && latestLive.length > 0"
+          v-show="currentTab === 'live' && (showFetchMoreButton || filteredLive.length > 1)"
           :value="liveSortBy"
           :select-names="videoLiveShortSelectNames"
           :select-values="videoLiveShortSelectValues"
@@ -97,7 +97,7 @@
         <FtElementList
           v-show="currentTab === 'videos'"
           id="videoPanel"
-          :data="latestVideos"
+          :data="filteredVideos"
           :use-channels-hidden-preference="false"
           role="tabpanel"
           aria-labelledby="videosTab"
@@ -112,7 +112,7 @@
         <FtElementList
           v-if="!hideChannelShorts && currentTab === 'shorts'"
           id="shortPanel"
-          :data="latestShorts"
+          :data="filteredShorts"
           :use-channels-hidden-preference="false"
           role="tabpanel"
           aria-labelledby="shortsTab"
@@ -128,7 +128,7 @@
           v-if="!hideLiveStreams"
           v-show="currentTab === 'live'"
           id="livePanel"
-          :data="latestLive"
+          :data="filteredLive"
           :use-channels-hidden-preference="false"
           role="tabpanel"
           aria-labelledby="liveTab"
@@ -275,7 +275,7 @@ import ChannelAbout from '../../components/ChannelAbout/ChannelAbout.vue'
 import ChannelDetails from '../../components/ChannelDetails/ChannelDetails.vue'
 import ChannelHome from '../../components/ChannelHome/ChannelHome.vue'
 import FtAgeRestricted from '../../components/FtAgeRestricted/FtAgeRestricted.vue'
-import FtAutoLoadNextPageWrapper from '../../components/ft-auto-load-next-page-wrapper/ft-auto-load-next-page-wrapper.vue'
+import FtAutoLoadNextPageWrapper from '../../components/FtAutoLoadNextPageWrapper.vue'
 import FtCard from '../../components/ft-card/ft-card.vue'
 import FtElementList from '../../components/FtElementList/FtElementList.vue'
 import FtFlexBox from '../../components/ft-flex-box/ft-flex-box.vue'
@@ -469,6 +469,9 @@ const hideChannelPlaylists = computed(() => store.getters.getHideChannelPlaylist
 /** @type {import('vue').ComputedRef<boolean>} */
 const hideChannelCommunity = computed(() => store.getters.getHideChannelCommunity)
 
+/** @type {import('vue').ComputedRef<boolean>} */
+const hideWatchedSubs = computed(() => store.getters.getHideWatchedSubs)
+
 /**
  * @template T
  * @param {T[]} array
@@ -486,7 +489,7 @@ const tabInfoValues = computed(() => {
   const values = [...channelTabs.value]
 
   // remove tabs from the array based on user settings
-  if (hideChannelHome.value) {
+  if (hideChannelHome.value || !homeData.value || homeData.value.length === 0) {
     removeFromArrayIfExists(values, 'home')
   }
 
@@ -857,17 +860,17 @@ async function getChannelAboutLocal() {
 
       location.value = about.country.isEmpty() ? null : about.country.text
     } else {
-      description.value = about.description ? autolinker.link(about.description) : ''
+      description.value = about.metadata.description ? autolinker.link(about.metadata.description) : ''
 
-      const viewCount_ = extractNumberFromString(about.view_count)
+      const viewCount_ = extractNumberFromString(about.metadata.view_count)
       viewCount.value = isNaN(viewCount_) ? null : viewCount_
 
-      const videoCount_ = extractNumberFromString(about.video_count)
+      const videoCount_ = extractNumberFromString(about.metadata.video_count)
       videoCount.value = isNaN(videoCount_) ? null : videoCount_
 
-      joined.value = about.joined_date && !about.joined_date.isEmpty() ? Date.parse(about.joined_date.text.replace('Joined').trim()) : 0
+      joined.value = about.metadata.joined_date && !about.metadata.joined_date.isEmpty() ? Date.parse(about.metadata.joined_date.text.replace('Joined').trim()) : 0
 
-      location.value = about.country ?? null
+      location.value = about.metadata.country ?? null
     }
   } catch (err) {
     console.error(err)
@@ -1047,6 +1050,30 @@ const latestVideos = shallowRef([])
 const videoContinuationData = shallowRef(null)
 const showVideoSortBy = ref(true)
 const videoSortBy = ref('newest')
+
+const filteredVideos = computed(() => {
+  if (hideWatchedSubs.value) {
+    return filterWatchedArray(latestVideos.value)
+  } else {
+    return latestVideos.value
+  }
+})
+
+const filteredShorts = computed(() => {
+  if (hideWatchedSubs.value) {
+    return filterWatchedArray(latestShorts.value)
+  } else {
+    return latestShorts.value
+  }
+})
+
+const filteredLive = computed(() => {
+  if (hideWatchedSubs.value) {
+    return filterWatchedArray(latestLive.value)
+  } else {
+    return latestLive.value
+  }
+})
 
 watch(videoSortBy, () => {
   if (!autoRefreshOnSortByChangeEnabled) { return }
@@ -2314,6 +2341,11 @@ function handleSubscription() {
     channelId: id.value,
     posts: latestCommunityPosts.value
   })
+}
+
+function filterWatchedArray(videos) {
+  const historyCache = store.getters.getHistoryCacheById
+  return videos.filter(video => !Object.hasOwn(historyCache, video.videoId))
 }
 </script>
 

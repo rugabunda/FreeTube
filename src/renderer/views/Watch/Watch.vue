@@ -48,6 +48,8 @@
           @toggle-theatre-mode="useTheatreMode = !useTheatreMode"
           @toggle-autoplay="toggleAutoplay"
           @playback-rate-updated="updatePlaybackRate"
+          @skip-to-next="handleSkipToNext"
+          @skip-to-prev="handleSkipToPrev"
         />
         <div
           v-if="!isLoading && (isUpcoming || errorMessage)"
@@ -222,6 +224,7 @@
           watchVideoRecommendationsLowerCard: watchingPlaylist || isLive,
           watchVideoRecommendationsNoCard: !watchingPlaylist || !isLive
         }"
+        @pause-player="pausePlayer"
       />
     </div>
   </div>

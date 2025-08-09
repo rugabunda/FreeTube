@@ -99,7 +99,7 @@ import { useI18n } from '../composables/use-i18n-polyfill'
 
 import FtSettingsSection from './FtSettingsSection/FtSettingsSection.vue'
 import FtSelect from './ft-select/ft-select.vue'
-import FtToggleSwitch from './ft-toggle-switch/ft-toggle-switch.vue'
+import FtToggleSwitch from './FtToggleSwitch/FtToggleSwitch.vue'
 import FtSlider from './FtSlider/FtSlider.vue'
 import FtFlexBox from './ft-flex-box/ft-flex-box.vue'
 import FtPrompt from './FtPrompt/FtPrompt.vue'
@@ -107,7 +107,6 @@ import FtPrompt from './FtPrompt/FtPrompt.vue'
 import store from '../store/index'
 
 import { colors } from '../helpers/colors'
-import { IpcChannels } from '../../constants'
 import { useColorTranslations } from '../composables/colors'
 
 const { t } = useI18n()
@@ -317,8 +316,7 @@ function handleSmoothScrolling(value) {
     store.dispatch('updateDisableSmoothScrolling',
       disableSmoothScrollingToggleValue.value
     ).then(() => {
-      const { ipcRenderer } = require('electron')
-      ipcRenderer.send(IpcChannels.RELAUNCH_REQUEST)
+      window.ftElectron.relaunch()
     })
   }
 }

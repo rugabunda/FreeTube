@@ -519,7 +519,6 @@ Settings:
         Semi-auto: Semiautomático
   Subscription Settings:
     Subscription Settings: Subscrição
-    Hide Videos on Watch: Ocultar vídeos visualizados
     Fetch Feeds from RSS: Obter subscrições através de RSS
     Fetch Automatically: Obter fontes automaticamente
     Confirm Before Unsubscribing: Impedir cancelamento acidental de subscrições
@@ -542,6 +541,7 @@ Settings:
     Hide Comments: Ocultar comentários
     Hide Live Streams: Ocultar transmissões em direto
     Hide Sharing Actions: Ocultar ações de partilha
+    Hide Videos on Watch: Ocultar vídeos visualizados
     Hide Chapters: Ocultar capítulos
     Hide Upcoming Premieres: Ocultar próximas estreias
     Hide Channels: Ocultar vídeos dos canais
@@ -1329,5 +1329,3 @@ Right-click or hold to see history: Clique com o botão direito do rato ou mante
 Description:
   Expand Description: '...mais'
   Collapse Description: Mostrar menos
-'Blocked opening potentially unsafe URL': 'Bloqueada a abertura de um URL potencialmente
-  inseguro: “{url}”.'

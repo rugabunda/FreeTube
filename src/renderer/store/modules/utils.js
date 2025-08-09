@@ -1,7 +1,7 @@
 import i18n from '../../i18n/index'
 import { set as vueSet } from 'vue'
 
-import { DefaultFolderKind, IpcChannels } from '../../../constants'
+import { DefaultFolderKind } from '../../../constants'
 import {
   CHANNEL_HANDLE_REGEX,
   createWebURL,
@@ -59,7 +59,7 @@ const state = {
     videos: false,
     liveStreams: false,
     shorts: false,
-    communityPosts: false,
+    posts: false,
   },
   appTitle: ''
 }
@@ -178,8 +178,8 @@ const getters = {
   getSubscriptionForShortsFirstAutoFetchRun (state) {
     return state.subscriptionFirstAutoFetchRunData.shorts === true
   },
-  getSubscriptionForCommunityPostsFirstAutoFetchRun (state) {
-    return state.subscriptionFirstAutoFetchRunData.communityPosts === true
+  getSubscriptionForPostsFirstAutoFetchRun (state) {
+    return state.subscriptionFirstAutoFetchRunData.posts === true
   },
   getAppTitle (state) {
     return state.appTitle
@@ -260,14 +260,7 @@ const actions = {
           const arrayBuffer = await response.arrayBuffer()
 
           if (process.env.IS_ELECTRON) {
-            const { ipcRenderer } = require('electron')
-
-            await ipcRenderer.invoke(
-              IpcChannels.WRITE_TO_DEFAULT_FOLDER,
-              DefaultFolderKind.DOWNLOADS,
-              fileName,
-              arrayBuffer
-            )
+            await window.ftElectron.writeToDefaultFolder(DefaultFolderKind.DOWNLOADS, fileName, arrayBuffer)
           }
 
           showToast(i18n.t('Downloading has completed', { videoTitle: title }))
@@ -382,10 +375,6 @@ const actions = {
     commit('setNewPlaylistVideoObject', data)
   },
 
-  hideCreatePlaylistPrompt ({ commit }) {
-    commit('setShowCreatePlaylistPrompt', false)
-  },
-
   showKeyboardShortcutPrompt ({ commit }) {
     commit('setIsKeyboardShortcutPromptShown', true)
   },
@@ -413,11 +402,8 @@ const actions = {
 
     const countries = await (await fetch(url)).json()
 
-    const regionNames = countries.map((entry) => { return entry.name })
-    const regionValues = countries.map((entry) => { return entry.code })
-
-    commit('setRegionNames', regionNames)
-    commit('setRegionValues', regionValues)
+    commit('setRegionNames', countries.names)
+    commit('setRegionValues', countries.codes)
   },
 
   async getYoutubeUrlInfo({ rootState, state }, urlStr) {
@@ -478,12 +464,14 @@ const actions = {
     const hashtagPattern = /^\/hashtag\/(?<tag>[^#&/?]+)$/
 
     const postPattern = /^\/post\/(?<postId>.+)/
+    const feedPattern = /^\/feed\/(?<type>trending|subscriptions|history|playlists|you|library)/
     const typePatterns = new Map([
       ['playlist', /^(\/playlist\/?|\/embed(\/?videoseries)?)$/],
       ['search', /^\/results|search\/?$/],
       ['hashtag', hashtagPattern],
+      ['post', postPattern],
+      ['feed', feedPattern],
       ['channel', channelPattern],
-      ['post', postPattern]
     ])
 
     for (const [type, pattern] of typePatterns) {
@@ -659,6 +647,16 @@ const actions = {
           url: `https://www.youtube.com${url.pathname}`
         }
       }
+      case 'feed': {
+        /** @type {'trending' | 'subscriptions' | 'history' | 'playlists' | 'you' | 'library'} */
+        const feedType = url.pathname.match(feedPattern).groups.type
+
+        if (feedType === 'playlists' || feedType === 'you' || feedType === 'library') {
+          return { urlType: 'userplaylists' }
+        } else {
+          return { urlType: feedType }
+        }
+      }
 
       default: {
         // Unknown URL type
@@ -804,8 +802,7 @@ const actions = {
     showToast(i18n.t('Video.External Player.OpeningTemplate', { videoOrPlaylist, externalPlayer }))
 
     if (process.env.IS_ELECTRON) {
-      const { ipcRenderer } = require('electron')
-      ipcRenderer.send(IpcChannels.OPEN_IN_EXTERNAL_PLAYER, { executable, args })
+      window.ftElectron.openInExternalPlayer(executable, args)
     }
   },
 }
@@ -997,8 +994,8 @@ const mutations = {
   setSubscriptionForShortsFirstAutoFetchRun (state) {
     state.subscriptionFirstAutoFetchRunData.shorts = true
   },
-  setSubscriptionForCommunityPostsFirstAutoFetchRun (state) {
-    state.subscriptionFirstAutoFetchRunData.communityPosts = true
+  setSubscriptionForPostsFirstAutoFetchRun (state) {
+    state.subscriptionFirstAutoFetchRunData.posts = true
   }
 }
 
