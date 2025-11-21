@@ -106,6 +106,7 @@ Trending:
   Trending: '發燒影片'
   Trending Tabs: 熱門分頁
   Gaming: 遊戲
+  Sports: 運動
 Most Popular: '最受歡迎'
 Playlists: '播放清單'
 User Playlists:
@@ -163,8 +164,7 @@ User Playlists:
     Save: 儲存
     Toast:
       You haven't selected any playlist yet.: 您尚未選取任何播放清單。
-      "{videoCount} video(s) added to 1 playlist": 1 部影片新增至 1 個播放清單 | {videoCount} 部影片新增至 1 個播放清單
-      "{videoCount} video(s) added to {playlistCount} playlists": 1 部影片新增至 {playlistCount} 個播放清單 | {videoCount} 部影片新增至 {playlistCount} 個播放清單
+      "Video(s) added to {playlistCount} playlists": ""
     Added {count} Times: 已新增 | 新增了 {count} 次
     Allow Adding Duplicate Video(s): 允許新增重複影片
     "{videoCount}/{totalVideoCount} Videos Already Added": 已新增 {videoCount}/{totalVideoCount} 部影片
