@@ -112,10 +112,7 @@ Subscriptions:
 Trending:
   Trending: 'Tendências'
   Trending Tabs: Separadores de tendências
-  Movies: Filmes
   Gaming: Jogos
-  Music: Músicas
-  Default: Padrão
 Most Popular: 'Mais populares'
 Playlists: 'Listas de reprodução'
 User Playlists:
@@ -921,10 +918,6 @@ Comments:
   Getting comment replies, please wait: 'A obter respostas ao comentário, por favor aguarde'
   Hide Comments: 'Ocultar comentários'
   # Context: View 10 Replies, View 1 Reply
-  View: 'Ver'
-  Hide: 'Ocultar'
-  Replies: 'Respostas'
-  Reply: 'Resposta'
   There are no comments available for this video: 'Este vídeo não tem comentários'
   Load More Comments: 'Carregar mais comentários'
   There are no more comments for this video: Não há mais comentários para este vídeo
@@ -932,8 +925,6 @@ Comments:
   Newest first: Mais recentes
   Top comments: Melhores comentários
   Pinned by: Fixado por
-  And others: e outros
-  From {channelName}: de {channelName}
   Member: Membro
   Hearted: Favorito
   View {replyCount} replies: Ver {replyCount} respostas

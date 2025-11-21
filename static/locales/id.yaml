@@ -111,10 +111,7 @@ Subscriptions:
   All Subscription Tabs Hidden: Semua tab langganan disembunyikan. Untuk melihat konten di sini, harap tampilkan beberapa tab di bagian "{subsection}" di "{settingsSection}".
 Trending:
   Trending: 'Sedang Tren'
-  Movies: Film
-  Music: Musik
   Gaming: Bermain game
-  Default: Bawaan
   Trending Tabs: Tab Trending
 Most Popular: 'Paling Populer'
 Playlists: 'Daftar Putar'
@@ -916,18 +913,12 @@ Comments:
   Getting comment replies, please wait: 'Memuat balasan komentar, harap tunggu'
   Hide Comments: 'Sembunyikan Komentar'
   # Context: View 10 Replies, View 1 Reply
-  View: 'Lihat'
-  Hide: 'Sembunyikan'
-  Replies: 'Balasan'
-  Reply: 'Balas'
   There are no comments available for this video: 'Tidak ada komentar tersedia untuk video ini'
   Load More Comments: 'Muat Lebih Banyak Komentar'
   Newest first: Terbaru
   Top comments: Komentar teratas
   There are no more comments for this video: Tidak ada komentar lagi untuk video ini
   Show More Replies: Tampilkan Lebih Banyak Balasan
-  From {channelName}: dari {channelName}
-  And others: dan lain-lain
   Pinned by: Disematkan oleh
   Member: Anggota
   View {replyCount} replies: Lihat {replyCount} balasan
