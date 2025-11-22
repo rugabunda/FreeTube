@@ -139,7 +139,7 @@ User Playlists:
     Search in Playlists: Otsi esindusloenditest
     Save: Salvesta
     Toast:
-      "Video(s) added to {playlistCount} playlists": ""
+      "Video(s) added to {playlistCount} playlists": "Video(d) onlisatud ühte esitusloendisse | Video(d) on lisatud esitusloendistesse: {playlistCount} tk"
       You haven't selected any playlist yet.: Sa pole veel ühtegi esitusloendit valinud.
     Select a playlist to add your N videos to: Vali esitusloend, kuhu soovid oma video lisada | Vali esitusloend, kuhu soovid oma {videoCount} videot lisada
     N playlists selected: '{playlistCount} valitud'
@@ -916,6 +916,7 @@ Share:
   YouTube Channel URL copied to clipboard: Kopeerisin YouTube'i kanali aadressi lõikelauale
   Invidious Channel URL copied to clipboard: Kopeerisin kanali aadressi Invidious'e API'st lõikelauale
   Share Channel: Jaga kanalit
+  Share Post: Jaga postitust
 Mini Player: 'Kompaktne vaade'
 Comments:
   Comments: 'Kommentaarid'
