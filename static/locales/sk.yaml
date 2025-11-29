@@ -675,15 +675,15 @@ Loop is now disabled: 'Opakovanie je teraz deaktivované'
 Loop is now enabled: 'Opakovanie je teraz povolené'
 Shuffle is now disabled: 'Náhodné prehrávanie je teraz zakázané'
 Shuffle is now enabled: 'Náhodné prehrávanie je teraz povolené'
-Playing Next Video: 'Prehráva sa nasledujúce video'
-Playing Previous Video: 'Prehráva sa predchádzajúce video'
-Canceled next video autoplay: 'Automatické prehrávanie ďalšieho videa bolo zrušené'
-'The playlist has ended. Enable loop to continue playing': 'Zoznam videí sa skončil. Ak chcete pokračovať v hraní, povoľte opakovania'
+Playing Next Video: 'Prehrávanie nasledujúceho videa'
+Playing Previous Video: 'Prehrávanie predchádzajúceho videa'
+Canceled next video autoplay: 'Zrušené automatické prehrávanie ďalšieho videa'
+'The playlist has ended. Enable loop to continue playing': 'Playlist skončil.   Povolte slučku pre pokračovanie prehrávania'
 
 Yes: 'Áno'
 No: 'Nie'
 This video is unavailable because of missing formats. This can happen due to country unavailability.: Toto video nie je k dispozícii z dôvodu chýbajúcich formátov. Môže sa to stať z dôvodu nedostupnosti krajiny.
-The playlist has been reversed: Zoznam videí bol obrátený
+The playlist has been reversed: Playlist bol obrátený
 Tooltips:
   Subscription Settings:
     Fetch Feeds from RSS: Keď je táto funkcia zapnutá, FreeTube bude namiesto svojej predvolenej metódy používať RSS na získanie vášho odberového kanála. RSS je rýchlejší a zabraňuje blokovaniu IP, ale neposkytuje určité informácie, ako je dĺžka videa, stav živého vysielania alebo príspevky
@@ -745,16 +745,16 @@ A new blog is now available, {blogTitle}. Click to view more: 'Dostupný nový �
 Download From Site: Stiahnuť z webu
 Version {versionNumber} is now available!  Click for more details: Verzia {versionNumber} je k dispozícii! Kliknite pre viac info
 Locale Name: Slovenčina
-Playing Next Video Interval: Prehrávanie ďalšieho videa za chvíľu. Kliknutím zrušíte. | Prehráva sa ďalšie video o {nextVideoInterval} sekundu. Kliknutím zrušíte. | Prehráva sa ďalšie video o {nextVideoInterval} sekúnd. Kliknutím zrušíte.
+Playing Next Video Interval: Prehrávanie ďalšieho videa okamžite. Kliknite pre zrušenie. | Prehrávanie ďalšieho videa o {nextVideoInterval} sekundu. Kliknite pre zrušenie. | Prehrávanie ďalšieho videa o {nextVideoInterval} sekúnd. Kliknite pre zrušenie.
 More: Viac
 Unknown YouTube url type, cannot be opened in app: Neznámy typ adresy URL YouTube, v aplikácii sa nedá otvoriť
 Open New Window: Otvoriť nové okno
-Default Invidious instance has been set to {instance}: Predvolená Invidious inštancia bola nastavená na {instance}
+Default Invidious instance has been set to {instance}: Predvolená inštancia Invidious bola nastavená na {instance}
 Search Bar:
   Clear Input: Vymazať zadané údaje
   Remove: Odstrániť
-Default Invidious instance has been cleared: Predvolená Invidious inštancia bola vymazaná
-External link opening has been disabled in the general settings: Vo všeobecných nastaveniach bolo zakázané otváranie externých odkazov
+Default Invidious instance has been cleared: Predvolená inštancia Invidious bola vymazaná
+External link opening has been disabled in the general settings: Otváranie externých odkazov bolo zakázané vo všeobecných nastaveniach
 Are you sure you want to open this link?: Naozaj chcete otvoriť tento odkaz?
 New Window: Nové okno
 Channels:
@@ -787,7 +787,7 @@ KeyboardShortcutPrompt:
   Zoom In: Priblížiť
   Zoom Out: Oddialiť
   Fullscreen: Prepnúť celú obrazovku
-  Focus Secondary Search: Zamerať na sekundárnu lištu vyhľadávania (ak je k dispozícii)
+  Focus Secondary Search: Zamerať na sekundárnu lištu vyhľadávania (ak je prítomná)
   Focus Search: Zamerať na lištu vyhľadávania
   Search in New Window: Vyhľadávať v novom okne
   Skip to Previous Video: Preskočiť na predchádzajúce video v playliste
@@ -804,11 +804,11 @@ KeyboardShortcutPrompt:
       Playback: 'Video: Prehrávanie'
       General: Video: Všeobecné
     App:
-      Situational: Aplikácia->Situačné
+      Situational: 'Aplikácia: Situačné'
       General: 'Aplikácia: Všeobecné'
   Show Keyboard Shortcuts: Zobraziť klávesové skratky
-  History Backward: Prejsť o jednu stránku naspäť
-  History Forward: Prejsť o jednu stránku dopredu
+  History Backward: Ísť späť o jednu stránku
+  History Forward: Ísť dopredu o jednu stránku
   Skip to Next Video: Preskočiť na ďalšie video v playliste alebo ďalšie odporúčané video
   End: Posunúť na koniec videa
   Home: Posunúť na začiatok videa
@@ -841,9 +841,31 @@ Keys:
   shift: Shift
   enter: Enter
   plus: Plus
+  ctrl: Ctrl
+  alt: Alt
 KeyboardShortcutTemplate: '{label} ({shortcut})'
 shortcutJoinOperator: +
 Age Restricted:
   This video is age restricted: Toto video je vekovo obmedzené
+  This channel is age restricted: Tento kanál je vekovo obmedzený
 Downloading has completed: Sťahovanie videa"{videoTitle}" je dokončené
 Starting download: Začína sa sťahovanie súboru „{videoTitle}“
+shortcutLabelSeparator: ｜
+Display Label: '{label}: {value}'
+checkmark: ✓
+Cancel: Zrušiť
+Yes, Open Link: Áno, otvoriť odkaz
+Yes, Restart: Áno, reštartovať
+Yes, Delete: Áno, vymazať
+Ok: OK
+Moments Ago: pred chvíľou
+Hashtag:
+  This hashtag does not currently have any videos: Tento hashtag momentálne nemá žiadne videá
+  Hashtag: Hashtag
+Trimmed input must be at least N characters long: Orezaný vstup musí byť aspoň 1 znak dlhý | Orezaný vstup musí byť aspoň {length} znakov dlhý
+Channel Unhidden: '{channel} odstránený z filtra kanálov'
+Channel Hidden: '{channel} pridaný do filtra kanálov'
+Screenshot Error: Snímka obrazovky sa nepodarila. {error}
+Screenshot Success: Snímka obrazovky uložená
+Downloading failed: Došlo k problému so sťahovaním "{videoTitle}"
+Autoplay Interruption Timer: Automatické prehrávanie zrušené kvôli {autoplayInterruptionIntervalHours} hodinám nečinnosti
