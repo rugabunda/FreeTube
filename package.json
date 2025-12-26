@@ -65,10 +65,17 @@
     "electron-context-menu": "^4.1.1",
     "marked": "^17.0.1",
     "process": "^0.11.10",
+<<<<<<< HEAD
     "shaka-player": "^4.16.11",
     "swiper": "^12.0.3",
     "vue": "^3.5.25",
     "vue-i18n": "^11.2.2",
+=======
+    "shaka-player": "^4.16.12",
+    "swiper": "^12.0.3",
+    "vue": "^3.5.26",
+    "vue-i18n": "^11.2.7",
+>>>>>>> upstream/development
     "vue-observe-visibility": "^2.0.0-alpha.1",
     "vue-router": "^4.6.4",
     "vuex": "^4.1.0",
@@ -85,7 +92,11 @@
     "css-loader": "^7.1.2",
     "css-minimizer-webpack-plugin": "^7.0.4",
     "electron": "^39.2.7",
+<<<<<<< HEAD
     "electron-builder": "^26.3.6",
+=======
+    "electron-builder": "^26.4.0",
+>>>>>>> upstream/development
     "eslint": "^9.39.2",
     "eslint-plugin-jsdoc": "^61.5.0",
     "eslint-plugin-jsonc": "^2.21.0",
@@ -97,13 +108,21 @@
     "html-webpack-plugin": "^5.6.5",
     "js-yaml": "^4.1.1",
     "json-minimizer-webpack-plugin": "^5.0.1",
+<<<<<<< HEAD
     "lefthook": "^2.0.11",
+=======
+    "lefthook": "^2.0.12",
+>>>>>>> upstream/development
     "mini-css-extract-plugin": "^2.9.4",
     "neostandard": "^0.12.2",
     "npm-run-all2": "^8.0.4",
     "postcss": "^8.5.6",
     "postcss-scss": "^4.0.9",
+<<<<<<< HEAD
     "sass": "^1.96.0",
+=======
+    "sass": "^1.97.1",
+>>>>>>> upstream/development
     "sass-loader": "^16.0.6",
     "stylelint": "^16.26.1",
     "stylelint-config-sass-guidelines": "^12.1.0",
@@ -113,7 +132,11 @@
     "tree-kill": "1.2.2",
     "vue-eslint-parser": "^10.2.0",
     "vue-loader": "^17.4.2",
+<<<<<<< HEAD
     "webpack": "^5.103.0",
+=======
+    "webpack": "^5.104.1",
+>>>>>>> upstream/development
     "webpack-cli": "^6.0.1",
     "webpack-dev-server": "^5.2.2",
     "yaml-eslint-parser": "^1.3.2"

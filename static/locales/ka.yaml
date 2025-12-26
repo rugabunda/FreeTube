@@ -91,7 +91,11 @@ Subscriptions:
   # channels that were likely deleted
   Error Channels: 'შეცდომების მქონე არხები'
   This profile has a large number of subscriptions. Forcing RSS to avoid rate limiting: 'ამ ანგარიშს აქვს გამოწერების დიდი რაოდენობა. იძულებით გამოიყენება RSS, რათა არ მოხდეს ტარიფის შეზღუდვა'
+<<<<<<< HEAD
   'Your Subscription list is currently empty. Start adding subscriptions to see them here.': 'თქვენი გამოწერების სია ამჟამად ცარიელია. დაამატეთ გამოწერები, რათა ნახოთ ისინი'
+=======
+  'Your Subscription list is currently empty. Start adding subscriptions to see them here.': 'თქვენი გამოწერების სია ამჟამად ცარიელია. თუ გნებავთ, შემოიტანოთ თქვენი გამოწერები, გადადით მონაცემების მორგების ფანჯარაში და აირჩიეთ გამოწერების შემოტანა. ან, შეგიძლიათ, მოძებნოთ არხები და გამოიწეროთ ისინი.'
+>>>>>>> upstream/development
   Load More Videos: 'მეტი ვიდეოს ჩატვირთვა'
 More: 'მეტი'
 Channels:
@@ -111,7 +115,7 @@ Playlists: 'დასაკრავი სიები'
 User Playlists:
   Your Playlists: 'თქვენი დასაკრავი სიები'
   Empty Search Message: 'ამ დასაკრავ სიაში თქვენი ძიების შესაბამისი ვიდეოები არ არის'
-  Search bar placeholder: 'დასაკრავ სიაში ძიება'
+  Search bar placeholder: 'დასაკრავი სიების ძებნა'
 History:
   # On History Page
   History: 'ისტორია'
@@ -124,7 +128,7 @@ Settings:
   Settings: 'პარამეტრები'
   The app needs to restart for changes to take effect. Restart and apply change?: 'ცვლილებების ძალაში შესასვლელად საჭიროა აპლიკაციის გადატვირთვა. გსურთ რომ გადატვირთოთ და დაადასტუროთ შეტანილი ცვლილებები?'
   General Settings:
-    General Settings: 'ზოგადი პარამეტრები'
+    General Settings: 'ზოგადი'
     Check for Updates: 'განახლებების შემოწმება'
     Check for Latest Blog Posts: 'უახლესი ბლოგპოსტების შემოწმება'
     Fallback to Non-Preferred Backend on Failure: 'შეფერხების შემთხვევაში არაუპირატეს ძრავაზე დაბრუნება'
@@ -160,7 +164,7 @@ Settings:
       Ask Before Opening Link: 'შეკითხვა ბმულის გახსნამდე'
       No Action: 'მოქმედების გარეშე'
   Theme Settings:
-    Theme Settings: 'თემის პარამეტრები'
+    Theme Settings: 'თემა'
     Match Top Bar with Main Color: 'ზედა ზოლისთვის მთავარი ფერის გამოყენება'
     Expand Side Bar by Default: 'სტანდარტულად გვერდითი პანელის გაფართოება'
     Disable Smooth Scrolling: 'გლუვი გადახვევის გამორთვა'
@@ -227,7 +231,11 @@ KeyboardShortcutPrompt:
 Preferences: პრეფერენციები
 Profile:
   Select All: ყველას მონიშვნა
+<<<<<<< HEAD
 Search character limit: ძებნის შეკითხვა აღემატება {searchCharacterLimit}-ის სიმბოლოს ლიმიტს.
+=======
+Search character limit: ძებნის მოთხოვნა {searchCharacterLimit}-ზე მეტ სიმბოლოს შეიცავს
+>>>>>>> upstream/development
 Go to page: გადადით გვერდზე
 Right-click or hold to see history: მარჯვენა ღილაკით დააწკაპუნეთ ან დააჭირეთ და გააჩერეთ ისტორიის სანახავად
 Close Banner: დახურვა ბანერის
