@@ -1131,3 +1131,4 @@ Keys:
 Autoplay Interruption Timer: Automatisch afspelen geannuleerd door {autoplayInterruptionIntervalHours} uur aan inactiviteit
 KeyboardShortcutTemplate: '{label} ({shortcut})'
 shortcutJoinOperator: +
+Compact side navigation: Minimaliseer Zijbar
