@@ -590,7 +590,7 @@ Settings:
     Clicking on Test Proxy will send a request to: 'Bydd clicio ar Test Proxy yn anfon cais at'
     Test Proxy: 'Profi Dirprwy'
     Your Info: 'Eich Manylion'
-    Ip: 'IP'
+    Ip: 'Ip'
     Country: 'Gwlad'
     Region: 'Rhanbarth'
     City: 'Dinas'
@@ -619,13 +619,6 @@ Settings:
     Show Family Friendly Only: 'Dangos Dim ond Addas i Deuluoedd'
     Hide Search Bar: 'Cuddio''r Bar Chwilio'
     Hide Uploader on Watch page: Cuddio'r Llwythwr ar y dudalen Gwylio
-  Download Settings:
-    Download Settings: 'Llwytho i lawr'
-    Ask Download Path: 'Gofyn am lwybr llwytho'
-    Choose Path: 'Dewiswch Lwybr'
-    Download Behavior: 'Ymddygiad Llwytho i Lawr'
-    Download in app: 'Llwytho i lawr mewn ap'
-    Open in web browser: 'Agor mewn porwr gwe'
   Experimental Settings:
     Experimental Settings: 'Arbrofol'
     Warning: 'Mae''r gosodiadau hyn yn arbrofol, gallan nhw achosi chwalu wrth eu galluogi. Rydym yn argymell yn gryf gwneud copïau wrth gefn. Defnyddiwch ar eich menter eich hun!'
@@ -659,16 +652,16 @@ About:
   Email: 'E-bost'
   Mastodon: 'Mastodon'
   Chat on Matrix: 'Sgwrsio ar Matrix'
-  Please read the: 'Darllenwch y'
   room rules: 'rheolau ystafell'
   Translate: 'Cyfieithu'
   Credits: 'Cydnabyddiaeth'
-  FreeTube is made possible by: 'Mae FreeTube yn bosibl oherwydd gwaith'
   these people and projects: 'y bobl a''r projectau hyn'
   Donate: 'Cyfrannu'
 
-  Licensed under the: Trwyddedig o dan y
   AGPLv3: AGPLv3
+  Licensed under the {licenseLink}: Trwyddedwyd o dan {licenseLink}
+  FreeTube is made possible by {creditsPageLink}: Mae Freetube ar gael oherwydd {creditsPageLink}
+  Please read the {roomRulesLink}: Darllenwch y {roomRulesLink}
 Profile:
   Profile Settings: 'Proffil'
   Toggle Profile List: 'Toglo Rhestr Proffil'
@@ -814,9 +807,6 @@ Video:
   'Live Chat is unavailable for this stream. It may have been disabled by the uploader.': 'Nid yw Sgwrsio Byw ar gael ar gyfer y ffrwd hon. Mae''n bosib ei fod wedi''i analluogi gan y llwythwr.'
   Show Super Chat Comment: 'Dangos Sylw Sgwrsio Uwch'
   Scroll to Bottom: 'Sgroliwch i''r Gwaelod'
-  Download Video: 'Llwytho Fideo i Lawr'
-  video only: 'fideo yn unig'
-  audio only: 'sain yn unig'
   Published:
     In less than a minute: 'Mewn llai na munud'
   Published on: 'Cyhoeddwyd ar'
@@ -887,6 +877,10 @@ Video:
 #& Playlists
   Save Watched Progress: Cadw Cynnydd Gwylio
   Watched Progress Saved: Cynnydd Gwylio Wedi'i Gadw
+  Popout Live Chat: Llamlen Sgwrs
+  Watch:
+    'Remaining preroll-ad time: {remindingTimeSeconds}s': 'Amser hysbysiadau cyn cyflwyniad: {remindingTimeSeconds}s'
+    'Remaining SABR backoff time: {remindingTimeSeconds}s': "Amser cefnu SABR sy'n weddill: {remindingTimeSeconds}s"
 Playlist:
   #& About
   Playlist: 'Rhestr chwarae'
@@ -1023,9 +1017,6 @@ Default Invidious instance has been set to {instance}: 'Mae''r enghraifft ragoso
 Default Invidious instance has been cleared: 'Mae''r enghraifft rhagosodedig o Invidious wedi''i chlirio'
 'The playlist has ended. Enable loop to continue playing': 'Mae''r rhestr chwarae wedi dod i ben.  Galluogwch gylchu i barhau i chwarae'
 External link opening has been disabled in the general settings: 'Mae agor dolen allanol wedi''i analluogi yn y gosodiadau cyffredinol'
-Downloading has completed: 'Mae "{videoTitle}" wedi gorffen llwytho i lawr'
-Starting download: 'Yn dechrau llwytho i lawr o "{videoTitle}"'
-Downloading failed: 'Bu problem wrth lwytho "{videoTitle}" i lawr'
 Screenshot Success: 'Llun sgrin wedi''i gadw'
 Screenshot Error: 'Methodd y llun sgrin. {error}'
 Channel Hidden: 'Mae {channel} wedi''i ychwanegu at hidlydd sianeli'
@@ -1135,5 +1126,5 @@ Keys:
 Right-click or hold to see history: De-gliciwch neu ddal i weld yr hanes
 Autoplay Interruption Timer: Diddymwyd awtochwarae oherwydd {autoplayInterruptionIntervalHours} awr o heb ei ddefnyddio
 shortcutLabelSeparator: ｜
-Compact side navigation: LLywio ochr cryno
+Compact side navigation: Ochr llywio cryno
 Expand side navigation: Ehangu llywio ochr

@@ -598,13 +598,6 @@ Settings:
     UseDeArrowTitles: Use DeArrow video titles
     'DeArrow Thumbnail Generator API Url (Default is https://dearrow-thumb.ajay.app)': DeArrow Thumbnail Generator API URL (Default is https://dearrow-thumb.ajay.app)
     UseDeArrowThumbnails: Use DeArrow for thumbnails
-  Download Settings:
-    Download Settings: Download
-    Ask Download Path: Ask for download path
-    Choose Path: Choose path
-    Download Behavior: Download behaviour
-    Open in web browser: Open in web browser
-    Download in app: Download in app
   Parental Control Settings:
     Hide Unsubscribe Button: Hide Unsubscribe button
     Parental Control Settings: Parental Control
@@ -638,10 +631,8 @@ About:
   Website: Website
 
   these people and projects: these people and projects
-  FreeTube is made possible by: FreeTube is made possible by
   Translate: Translate
   room rules: room rules
-  Please read the: Please read the
   Chat on Matrix: Chat on Matrix
   Mastodon: Mastodon
   Please check for duplicates before posting: Please check for duplicates before posting
@@ -652,8 +643,10 @@ About:
   Downloads / Changelog: Downloads / Changelog
   Source code: Source code
   Discussions: Discussions
-  Licensed under the: Licensed under the
   AGPLv3: AGPLv3
+  Licensed under the {licenseLink}: Licensed under the {licenseLink}
+  Please read the {roomRulesLink}: Please read the {roomRulesLink}
+  FreeTube is made possible by {creditsPageLink}: FreeTube is made possible by {creditsPageLink}
 Profile:
   Profile Settings: Profile
   Profile Select: 'Profile Select'
@@ -791,9 +784,6 @@ Video:
 #& Videos
   Started streaming on: Started streaming on
   Streamed on: Streamed on
-  audio only: audio only
-  video only: video only
-  Download Video: Download Video
   Copy Invidious Channel Link: Copy the link of this Invidious Channel
   Open Channel in Invidious: Open this Channel in Invidious
   Copy YouTube Channel Link: Copy the Link of this YouTube Channel
@@ -872,6 +862,10 @@ Video:
   DRMProtected: DRM protected videos cannot be played in FreeTube, as they require proprietary, closed source components. If you want to watch this video please watch it on the official YouTube website in a DRM enabled web browser.
   Save Watched Progress: Save Watched Progress
   Watched Progress Saved: Watched Progress Saved
+  Watch:
+    'Remaining preroll-ad time: {remindingTimeSeconds}s': 'Remaining preroll-ad time: {remindingTimeSeconds}s'
+    'Remaining SABR backoff time: {remindingTimeSeconds}s': 'Remaining SABR backoff time: {remindingTimeSeconds}s'
+  Popout Live Chat: Popout Chat
 Playlist:
   #& About
   Playlist: Playlist
@@ -1008,9 +1002,6 @@ Search Bar:
   Remove: Remove
 External link opening has been disabled in the general settings: External link opening has been disabled in the general settings
 Are you sure you want to open this link?: Are you sure you want to open this link?
-Downloading has completed: '‘{videoTitle}’ has finished downloading'
-Starting download: Starting download of ‘{videoTitle}’
-Downloading failed: There was an issue downloading ‘{videoTitle}’
 Screenshot Error: Screenshot failed. {error}
 Screenshot Success: Saved screenshot
 New Window: New window
@@ -1031,7 +1022,7 @@ Clipboard:
   Copy failed: Copy to clipboard failed
   Cannot access clipboard without a secure connection: Cannot access clipboard without a secure connection
 Preferences: Preferences
-Ok: OK
+Ok: Ok
 Hashtag:
   Hashtag: Hashtag
   This hashtag does not currently have any videos: This hashtag does not currently have any videos

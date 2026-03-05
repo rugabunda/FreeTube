@@ -328,11 +328,9 @@ About:
   #& About
   Donate: Doniraj
   these people and projects: teh ljudi in projektov
-  FreeTube is made possible by: FreeTube obstaja zaradi
   Credits: Zahvale
   Translate: Prevedi
   room rules: sobna pravila
-  Please read the: Prosimo, preberite
   Chat on Matrix: Klepetajte na Matrixu
   Mastodon: Mastodon
   Email: E-pošta
@@ -442,9 +440,6 @@ Video:
     In less than a minute: Manj kot minuti
   Published on: 'Objavljeno dne'
 #& Videos
-  audio only: Samo avdio
-  video only: Samo video
-  Download Video: Prenesi videoposnetek
   Started streaming on: Pretok začet dne
   Streamed on: Pretočeno dne
   Copy Invidious Channel Link: Kopiraj povezavo Invidious kanala

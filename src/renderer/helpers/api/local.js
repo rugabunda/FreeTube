@@ -389,7 +389,6 @@ export async function getLocalSearchContinuation(continuationData) {
 
 /**
  * @param {string} id
- * @param {boolean} forceEnableSabrOnlyResponseWorkaround - When true workaround will be forced and there will be no audio track selection
  * @returns {Promise<{
  *   info: import('youtubei.js').YT.VideoInfo,
  *   poToken: string | undefined,
@@ -399,12 +398,12 @@ export async function getLocalSearchContinuation(continuationData) {
  *     osName: string,
  *     osVersion: string
  *   },
- *   adEndTimeUnixMs: number,
- *   sabrCanBeUsed: boolean,
+ *   adEndTimeUnixMs: number
  * }>}
  */
-export async function getLocalVideoInfo(id, { forceEnableSabrOnlyResponseWorkaround = false } = {}) {
-  let totalAdTimeSeconds = 0
+export async function getLocalVideoInfo(id) {
+  let responseTime = Date.now()
+  let totalAdTimeMilliseconds = 0
 
   const webInnertube = await createInnertube({
     withPlayer: true,
@@ -418,19 +417,25 @@ export async function getLocalVideoInfo(id, { forceEnableSabrOnlyResponseWorkaro
 
       const responseText = await response.text()
 
+      responseTime = Date.now()
+
       const json = JSON.parse(responseText)
 
       if (Array.isArray(json.adSlots)) {
         for (const adSlot of json.adSlots) {
           if (adSlot.adSlotRenderer?.adSlotMetadata?.triggerEvent === 'SLOT_TRIGGER_EVENT_BEFORE_CONTENT') {
-            const playerVars = adSlot.adSlotRenderer.fulfillmentContent?.fulfilledLayout?.playerBytesAdLayoutRenderer
-              ?.renderingContent?.instreamVideoAdRenderer?.playerVars
+            const instreamVideoAdRenderer = adSlot.adSlotRenderer.fulfillmentContent?.fulfilledLayout?.playerBytesAdLayoutRenderer
+              ?.renderingContent?.instreamVideoAdRenderer
 
-            if (playerVars) {
-              const match = playerVars.match(/length_seconds=([\d.]+)/)
+            if (instreamVideoAdRenderer) {
+              if (typeof instreamVideoAdRenderer.skipOffsetMilliseconds === 'number') {
+                totalAdTimeMilliseconds += instreamVideoAdRenderer.skipOffsetMilliseconds
+              } else if (instreamVideoAdRenderer.playerVars) {
+                const match = instreamVideoAdRenderer.playerVars.match(/length_seconds=([\d.]+)/)
 
-              if (match) {
-                totalAdTimeSeconds += parseFloat(match[1])
+                if (match) {
+                  totalAdTimeMilliseconds += parseFloat(match[1]) * 1000
+                }
               }
             }
           }
@@ -464,36 +469,10 @@ export async function getLocalVideoInfo(id, { forceEnableSabrOnlyResponseWorkaro
   }
 
   const info = await webInnertube.getInfo(id, { po_token: contentPoToken })
-  const sabrCannotBeUsed = info.streaming_data?.server_abr_streaming_url == null ||
-    info.player_config?.media_common_config?.media_ustreamer_request_config?.video_playback_ustreamer_config == null
-  const workaroundRequired = forceEnableSabrOnlyResponseWorkaround || sabrCannotBeUsed
+
   // Some time would be used for parsing and maybe additional requests so end time should be calculated sooner to reduce actual waiting time
-  let adEndTimeUnixMs = Date.now()
-
-  // #region temporary workaround for SABR-only responses
-
-  if (workaroundRequired) {
-    // MWEB doesn't have an audio track selector so it picks the audio track on the server based on the request language.
-    const originalAudioTrackFormat = info.streaming_data?.adaptive_formats.find(format => {
-      return format.has_audio && format.is_original && format.language
-    })
-
-    if (originalAudioTrackFormat) {
-      webInnertube.session.context.client.hl = originalAudioTrackFormat.language
-    }
-
-    const mwebInfo = await webInnertube.getBasicInfo(id, { client: 'MWEB', po_token: contentPoToken })
-
-    if (mwebInfo.playability_status.status === 'OK' && mwebInfo.streaming_data?.adaptive_formats) {
-      info.playability_status = mwebInfo.playability_status
-      info.streaming_data.adaptive_formats = mwebInfo.streaming_data.adaptive_formats
-    }
-  }
-  // Some time would be used for parsing and maybe additional requests so end time should be calculated sooner to reduce actual waiting time
-  // Legacy format also requires this
-  adEndTimeUnixMs += totalAdTimeSeconds * 1000
-
-  // #endregion temporary workaround for SABR-only responses
+  // Legacy format requires this
+  const adEndTimeUnixMs = responseTime + totalAdTimeMilliseconds
 
   let { clientName, clientVersion, osName, osVersion } = webInnertube.session.context.client
 
@@ -566,17 +545,21 @@ export async function getLocalVideoInfo(id, { forceEnableSabrOnlyResponseWorkaro
       info.streaming_data.server_abr_streaming_url = await player.decipher(info.streaming_data.server_abr_streaming_url)
     }
 
-    const firstFormat = info.streaming_data.adaptive_formats[0]
-
-    if (firstFormat.url || firstFormat.signature_cipher || firstFormat.cipher) {
-      await decipherFormats(info.streaming_data.adaptive_formats, player)
-    }
-
     if (info.streaming_data.dash_manifest_url) {
-      info.streaming_data.dash_manifest_url = await decipherDashManifestUrl(
+      info.streaming_data.dash_manifest_url = await decipherManifestUrl(
         info.streaming_data.dash_manifest_url,
         webInnertube.session.player,
-        contentPoToken
+        contentPoToken,
+        true
+      )
+    }
+
+    if (info.streaming_data.hls_manifest_url) {
+      info.streaming_data.hls_manifest_url = await decipherManifestUrl(
+        info.streaming_data.hls_manifest_url,
+        webInnertube.session.player,
+        contentPoToken,
+        false
       )
     }
   }
@@ -602,7 +585,6 @@ export async function getLocalVideoInfo(id, { forceEnableSabrOnlyResponseWorkaro
     poToken: contentPoToken,
     clientInfo,
     adEndTimeUnixMs,
-    sabrCanBeUsed: !sabrCannotBeUsed,
   }
 }
 
@@ -639,24 +621,30 @@ async function decipherFormats(formats, player) {
  * @param {string} url
  * @param {import('youtubei.js').Player} player
  * @param {string} poToken
+ * @param {boolean} isDash
  */
-async function decipherDashManifestUrl(url, player, poToken) {
+async function decipherManifestUrl(url, player, poToken, isDash) {
   const urlObject = new URL(url)
 
   if (urlObject.searchParams.size > 0) {
     urlObject.searchParams.set('pot', poToken)
-    urlObject.searchParams.set('mpd_version', '7')
+
+    if (isDash) {
+      urlObject.searchParams.set('mpd_version', '7')
+    }
 
     return await player.decipher(urlObject.toString())
   }
 
+  const pathPrefix = isDash ? '/api/manifest/dash' : '/api/manifest/hls_variant'
+
   // Convert path params to query params
   const pathParts = urlObject.pathname
-    .replace('/api/manifest/dash', '')
+    .replace(pathPrefix, '')
     .split('/')
     .filter(part => part.length > 0)
 
-  urlObject.pathname = '/api/manifest/dash'
+  urlObject.pathname = pathPrefix
 
   for (let i = 0; i + 1 < pathParts.length; i += 2) {
     urlObject.searchParams.set(pathParts[i], decodeURIComponent(pathParts[i + 1]))
@@ -673,7 +661,11 @@ async function decipherDashManifestUrl(url, player, poToken) {
   }
 
   decipheredUrlObject.search = ''
-  decipheredUrlObject.pathname += `/pot/${encodeURIComponent(poToken)}/mpd_version/7`
+  decipheredUrlObject.pathname += `/pot/${encodeURIComponent(poToken)}`
+
+  if (isDash) {
+    decipheredUrlObject.pathname += '/mpd_version/7'
+  }
 
   return decipheredUrlObject.toString()
 }
@@ -1409,7 +1401,7 @@ export function parseLocalPlaylistVideo(video) {
       videoId: video_.id,
       title: video_.title.text,
       author: video_.author.name,
-      authorId: video_.author.id,
+      authorId: (video_.author?.id != null && video_.author.id !== 'N/A') ? video_.author.id : null,
       viewCount,
       published,
       lengthSeconds: isNaN(video_.duration.seconds) ? '' : video_.duration.seconds,
@@ -1465,7 +1457,7 @@ export function parseLocalListVideo(item, channelId, channelName) {
       videoId: video.video_id,
       title: video.title.text,
       author: video.author?.name ?? channelName,
-      authorId: video.author?.id ?? channelId,
+      authorId: (video.author?.id != null && video.author.id !== 'N/A') ? video.author.id : channelId,
       viewCount: video.views.text == null ? null : extractNumberFromString(video.views.text),
       published,
       lengthSeconds: isLive ? '' : Utils.timeToSeconds(video.duration.text),

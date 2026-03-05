@@ -583,13 +583,6 @@ Settings:
     Enable Tor / Proxy: Activați Tor / Proxy
     Proxy Settings: Proxy
     Proxy Warning: FreeTube nu are un proxy încorporat, dar se poate conecta la un proxy extern, cum ar fi unul care rulează pe computer, cum ar fi Tor, sau un proxy extern, cum ar fi un proxy SOCKS5 furnizat de unele VPN-uri. Dacă este activat, asigurați-vă că proxy/Tor este configurat corect, altfel FreeTube nu va putea prelua date.
-  Download Settings:
-    Ask Download Path: Solicită calea de descărcare
-    Choose Path: Alege calea
-    Download Settings: descărcare
-    Download Behavior: Comportamentul descărcărilor
-    Download in app: Descarcă în aplicație
-    Open in web browser: Deschide în browser-ul web
   Parental Control Settings:
     Hide Unsubscribe Button: Ascunde butonul de dezabonare
     Parental Control Settings: Control parental
@@ -618,11 +611,9 @@ About:
   Email: E-mail
   Donate: Donează
   these people and projects: aceste persoane și proiecte
-  FreeTube is made possible by: FreeTube este posibil datorită
   Credits: Credite
   Translate: Traduceți
   room rules: regulile camerei
-  Please read the: Vă rugăm să citiți
   Chat on Matrix: Chat pe Matrix
   Blog: Blog
   Website: Site web
@@ -637,7 +628,6 @@ About:
   Source code: Codul sursă
   Beta: Beta
   Discussions: Discuții
-  Licensed under the: Licențiat în conformitate cu
   AGPLv3: AGPLv3
 Profile:
   Profile Select: 'Selectare profil'
@@ -800,9 +790,6 @@ Video:
     filler: Filler
   Started streaming on: A început să transmită pe
   Streamed on: Difuzat pe
-  audio only: numai audio
-  video only: numai video
-  Download Video: Descărcare videoclipuri
   Copy Invidious Channel Link: Copiați linkul canalului Invidious
   Open Channel in Invidious: Canal deschis în Invidious
   Copy YouTube Channel Link: Copiați linkul canalului YouTube
@@ -987,9 +974,6 @@ Tooltips:
     UseDeArrowTitles: Înlocuiți titlurile video cu titluri trimise de utilizator de la DeArrow.
     UseDeArrowThumbnails: Înlocuiți miniaturile video cu miniaturi de la DeArrow.
 External link opening has been disabled in the general settings: Deschiderea linkurilor externe a fost dezactivată în setările generale
-Starting download: Se începe descărcarea a "{videoTitle}"
-Downloading failed: A existat o problemă la descărcarea "{videoTitle}"
-Downloading has completed: '"{videoTitle}" s-a terminat de descărcat'
 New Window: Fereastră nouă
 Channels:
   Channels: Canale

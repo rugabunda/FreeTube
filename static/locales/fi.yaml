@@ -501,13 +501,6 @@ Settings:
     Players:
       None:
         Name: Ei mitään
-  Download Settings:
-    Download Settings: Latausasetukset
-    Choose Path: Valitse polku
-    Ask Download Path: Kysy latauspolkua
-    Download Behavior: Latauksen toiminta
-    Download in app: Lataa sovelluksessa
-    Open in web browser: Avaa selaimessa
   Parental Control Settings:
     Parental Control Settings: Perheasetukset
     Hide Unsubscribe Button: Piilota Peruuta tilaus -paninike
@@ -540,14 +533,12 @@ About:
   Chat on Matrix: Matrix
   these people and projects: nämä henkilöt ja projektit
   room rules: huoneen säännöt
-  Please read the: Lue
   Please check for duplicates before posting: Tarkista kopioiden varalta ennen julkaisua
   Website: Verkkosivusto
   Mastodon: Mastodon
   Translate: Käännös
   Credits: Kiitettävää
   Help: Apua
-  FreeTube is made possible by: FreeTuben mahdollistavat
   GitHub releases: GitHub-julkaisut
   Downloads / Changelog: Lataukset/muutosloki
   Beta: Beta
@@ -555,7 +546,6 @@ About:
   Donate: Lahjoita
   Source code: Lähdekoodi
   Discussions: Keskustelut
-  Licensed under the: Lisenssi
   AGPLv3: AGPLv3
 Channel:
   Subscribe: 'Tilaa'
@@ -642,9 +632,6 @@ Video:
   Shuffle Playlist: Sekoita soittolistaa
   Loop Playlist: Kierrätä soittolistaa
   Starting soon, please refresh the page to check again: Hetki pieni, päivitä sivu uudelleen
-  audio only: vain ääni
-  video only: vain video
-  Download Video: Lataa video
   Copy Invidious Channel Link: Kopio kanavan Invidious-linkki
   Open Channel in Invidious: Avaa kanava Invidiousissa
   Copy YouTube Channel Link: Kopioi YouTube-kanavan linkki
@@ -843,9 +830,6 @@ Search Bar:
   Remove: Poista
 External link opening has been disabled in the general settings: Ulkoisen linkin avaaminen on poistettu käytöstä yleisissä asetuksissa
 Are you sure you want to open this link?: Haluatko varmasti avata tämän linkin?
-Downloading failed: Videon "{videoTitle}" lataamisessa havaittiin ongelma
-Downloading has completed: Videon "{videoTitle}" lataus on valmis
-Starting download: Aloitetaan lataamaan "{videoTitle}"
 Screenshot Success: Kuvakaappaus tallennettu nimellä ”{filePath}”
 New Window: Uusi Ikkuna
 Screenshot Error: Ruutukaappaus epäonnistui. {error}

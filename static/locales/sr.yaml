@@ -588,13 +588,6 @@ Settings:
       None:
         Name: Ниједно
     Ignore Default Arguments: Занемари подразумеване аргументе
-  Download Settings:
-    Choose Path: Избор путање
-    Open in web browser: Отвори у прегледачу
-    Ask Download Path: Питај за путању за преузимање
-    Download Behavior: Понашање преузимања
-    Download in app: Преузми у апликацији
-    Download Settings: Преузимање
   Password Settings:
     Remove Password: Уклони лозинку
     Set Password To Prevent Access: Подеси лозинку да спречиш приступ подешавањима
@@ -629,16 +622,13 @@ About:
   Email: 'Имејл'
   Mastodon: 'Mastodon'
   Chat on Matrix: 'Ћаскање на Matrix-у'
-  Please read the: 'Прочитајте'
   room rules: 'правила собе'
   Translate: 'Преведи'
   Credits: 'Заслуге'
-  FreeTube is made possible by: 'FreeTube су омогућили'
   these people and projects: 'ови људи и пројекти'
   Donate: 'Донација'
 
   Discussions: Дискусије
-  Licensed under the: Лиценцирано под
   AGPLv3: AGPLv3
 Profile:
   Profile Select: 'Избор профила'
@@ -804,13 +794,10 @@ Video:
     playlist: плејлиста
   Live chat is enabled. Chat messages will appear here once sent.: Ћаскање уживо је омогућено.  Поруке ћаскања ће се појавити овде када буду послате.
   Streamed on: Стримовано
-  video only: само видео снимак
-  audio only: само аудио снимак (звук)
   Show Super Chat Comment: Прикажи Super Chat коментар
   Scroll to Bottom: Превуци до дна
   Started streaming on: Започето стримовање
   Premieres: Премијера
-  Download Video: Преузми видео снимак
   Published on: Објављено
   'Live Chat is currently not supported with the Invidious API. A direct connection to YouTube is required.': Ћаскање уживо тренутно није подржано са Invidious API-јем. Потребна је директна веза са YouTube-ом.
   'Live Chat is unavailable for this stream. It may have been disabled by the uploader.': Ћаскање уживо није доступно за овај стрим. Можда га је онемогућио аутор.
@@ -987,7 +974,6 @@ Hashtag:
 Playing Previous Video: Пуштање претходног видео снимка
 Ok: У реду
 Invidious API Error (Click to copy): Грешка Invidious API-ја (Кликнути за копирање)
-Starting download: Почиње преузимање „{videoTitle}“
 Preferences: Преференце
 Default Invidious instance has been cleared: Подразумевана инстанца Invidious-а је избрисана
 Mini Player: Мини плејер
@@ -997,9 +983,7 @@ Default Invidious instance has been set to {instance}: Подразумеван�
 Are you sure you want to open this link?: Желите ли заиста да отворите овај линк?
 This video is unavailable because of missing formats. This can happen due to country unavailability.: Овај видео снимак је недоступан, јер недостају формати. То се може догодити због недоступности државе.
 Screenshot Error: Снимак екрана није успео. {error}
-Downloading has completed: „{videoTitle}“ је завршио преузимање
 Loop is now enabled: Понављање је сада омогућено
-Downloading failed: Дошло је до проблема при преузимању „{videoTitle}“
 Channel Hidden: '{channel} је додат на филтер канала'
 Go to page: Иди на {page}
 Channel Unhidden: '{channel} је уклоњен из филтера канала'

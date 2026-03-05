@@ -3,7 +3,7 @@ import shaka from 'shaka-player'
 import { useI18n } from '../../composables/use-i18n-polyfill'
 
 import store from '../../store/index'
-import { DefaultFolderKind, KeyboardShortcuts } from '../../../constants'
+import { KeyboardShortcuts } from '../../../constants'
 import { AudioTrackSelection } from './player-components/AudioTrackSelection'
 import { FullWindowButton } from './player-components/FullWindowButton'
 import { LegacyQualitySelection } from './player-components/LegacyQualitySelection'
@@ -1733,9 +1733,9 @@ export default defineComponent({
         } else {
           const arrayBuffer = await blob.arrayBuffer()
 
-          await window.ftElectron.writeToDefaultFolder(DefaultFolderKind.SCREENSHOTS, filenameWithExtension, arrayBuffer)
-
-          showToast(t('Screenshot Success'))
+          if (await window.ftElectron.writeToDefaultFolder(filenameWithExtension, arrayBuffer)) {
+            showToast(t('Screenshot Success'))
+          }
         }
       } catch (error) {
         console.error(error)
@@ -2794,9 +2794,8 @@ export default defineComponent({
         })
       }
 
-      const delayLoadUntilUnix = props.delayLoadUntilUnix
-      const initialLoadDelayMs = delayLoadUntilUnix - Date.now()
-      if (initialLoadDelayMs > 0) {
+      const initialLoadDelayMs = props.delayLoadUntilUnix - Date.now()
+      if (initialLoadDelayMs > 0 && (props.format === 'legacy' || props.manifestMimeType !== MANIFEST_TYPE_SABR)) {
         showToast(
           ({ remainingMs }) => {
             // `+value` converts string back to float
@@ -3064,6 +3063,13 @@ export default defineComponent({
 
                 if (label) {
                   variants = variants.filter(variant => variant.label === label)
+                } else if (variants.length > 1) {
+                  // default audio track
+                  const filteredVariants = variants.filter(variant => variant.audioRoles.includes('main'))
+                  // Sometimes there is nothing marked as main, don't filter in this case
+                  if (filteredVariants.length > 0) {
+                    variants = filteredVariants
+                  }
                 }
 
                 let chosenVariant
