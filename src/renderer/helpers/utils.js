@@ -69,7 +69,6 @@ export function calculatePublishedDate(publishedText, isLive = false, isUpcoming
   }
 
   if (!publishedText) {
-    console.error("publishedText is missing but the video isn't live or upcoming")
     return undefined
   }
 
@@ -749,7 +748,7 @@ export function toDistractionFreeTitle(title, minUpperCase = 3) {
  * @returns {string}
  */
 export function formatNumber(number, options = undefined) {
-  return Intl.NumberFormat([i18n.global.locale, 'en'], options).format(number)
+  return Intl.NumberFormat([i18n.global.locale.value, 'en'], options).format(number)
 }
 
 export function getTodayDateStrLocalTimezone() {
@@ -822,7 +821,7 @@ export function getRelativeTimeFromDate(date, hideSeconds = false, useThirtyDayM
 
   // Using `Math.ceil` so that -1.x days ago displayed as 1 day ago
   // Notice that the value is turned to negative to be displayed as "ago"
-  return new Intl.RelativeTimeFormat([i18n.global.locale, 'en']).format(Math.ceil(-timeDiffFromNow), timeUnit)
+  return new Intl.RelativeTimeFormat([i18n.global.locale.value, 'en']).format(Math.ceil(-timeDiffFromNow), timeUnit)
 }
 
 /**
