@@ -35,6 +35,7 @@
         :views="viewCount"
         :videos="videoCount"
         :location="location"
+        :external-links="channelAboutLinks"
         :tags="tags"
         :related-channels="relatedChannels"
       />
@@ -325,8 +326,9 @@ import {
   parseLocalSubscriberCount,
   getLocalArtistTopicChannelReleasesContinuation,
   getLocalPlaylist,
-  parseLocalPlaylistVideo,
-  parseChannelHomeTab
+  parseLocalPlaylistVideos,
+  parseChannelHomeTab,
+  parseLocalChannelAboutLinks
 } from '../../helpers/api/local'
 
 const { t } = useI18n()
@@ -362,6 +364,8 @@ const viewCount = ref(0)
 const videoCount = ref(0)
 const joined = ref(0)
 const location = ref(null)
+/** @type {import('vue').ShallowRef<{ title: string, url: string, displayUrl: string, iconUrl: string }[]>} */
+const channelAboutLinks = shallowRef([])
 const relatedChannels = shallowRef([])
 const isArtistTopicChannel = ref(false)
 const isFamilyFriendly = ref(false)
@@ -552,6 +556,7 @@ watch(route, () => {
 
   id.value = route.params.id
   searchPage = 1
+  channelAboutLinks.value = []
   relatedChannels.value = []
   latestVideos.value = []
   latestShorts.value = []
@@ -856,8 +861,15 @@ async function getChannelLocal() {
 
 async function getChannelAboutLocal() {
   try {
+    const expectedId = id.value
     await ensureChannelInstance()
     const about = await channelInstance.getAbout()
+
+    if (expectedId !== id.value) {
+      return
+    }
+
+    channelAboutLinks.value = parseLocalChannelAboutLinks(about)
 
     if (about.is(YTNodes.ChannelAboutFullMetadata)) {
       description.value = about.description.isEmpty() ? '' : autolinker.link(about.description.text)
@@ -956,6 +968,7 @@ async function getChannelInfoInvidious() {
   isLoading.value = true
   apiUsed = 'invidious'
   channelInstance = null
+  channelAboutLinks.value = []
 
   const expectedId = id.value
   try {
@@ -1000,41 +1013,43 @@ async function getChannelInfoInvidious() {
     // some channels only have a few tabs
     // here are all possible values: home, videos, shorts, streams, playlists, community, channels, about
 
+    const tabs = ['about', ...response.tabs]
+
     channelTabs.value = SUPPORTED_CHANNEL_TABS.filter(tab => {
-      return response.tabs.includes(tab) && tab !== 'home'
+      return tabs.includes(tab) && tab !== 'home'
     })
 
     currentTab.value = currentOrFirstTab(route.params.currentTab)
 
-    if (response.tabs.includes('videos')) {
+    if (tabs.includes('videos')) {
       channelInvidiousVideos()
     }
 
-    if (!hideChannelShorts.value && response.tabs.includes('shorts')) {
+    if (!hideChannelShorts.value && tabs.includes('shorts')) {
       channelInvidiousShorts()
     }
 
-    if (!hideLiveStreams.value && response.tabs.includes('live')) {
+    if (!hideLiveStreams.value && tabs.includes('live')) {
       channelInvidiousLive()
     }
 
-    if (!hideChannelPodcasts.value && response.tabs.includes('podcasts')) {
+    if (!hideChannelPodcasts.value && tabs.includes('podcasts')) {
       channelInvidiousPodcasts()
     }
 
-    if (!hideChannelReleases.value && response.tabs.includes('releases')) {
+    if (!hideChannelReleases.value && tabs.includes('releases')) {
       channelInvidiousReleases()
     }
 
-    if (!hideChannelCourses.value && response.tabs.includes('courses')) {
+    if (!hideChannelCourses.value && tabs.includes('courses')) {
       channelInvidiousCourses()
     }
 
-    if (!hideChannelPlaylists.value && response.tabs.includes('playlists')) {
+    if (!hideChannelPlaylists.value && tabs.includes('playlists')) {
       getPlaylistsInvidious()
     }
 
-    if (!hideChannelCommunity.value && response.tabs.includes('community')) {
+    if (!hideChannelCommunity.value && tabs.includes('community')) {
       getCommunityPostsInvidious()
     }
 
@@ -1117,7 +1132,7 @@ async function getChannelVideosLocal() {
         return
       }
 
-      latestVideos.value = playlist.items.map(parseLocalPlaylistVideo)
+      latestVideos.value = parseLocalPlaylistVideos(playlist.items)
       videoContinuationData.value = playlist.has_continuation ? playlist : null
       isElementListLoading.value = false
     } else {
@@ -1173,7 +1188,7 @@ async function getChannelVideosLocalMore() {
       /** @type {import('youtubei.js').YT.Playlist} */
       const continuation = await videoContinuationData.value.getContinuation()
 
-      latestVideos.value = latestVideos.value.concat(continuation.items.map(parseLocalPlaylistVideo))
+      latestVideos.value = latestVideos.value.concat(parseLocalPlaylistVideos(continuation.items))
       videoContinuationData.value = continuation.has_continuation ? continuation : null
     } else {
       /**

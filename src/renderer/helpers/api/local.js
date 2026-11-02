@@ -22,6 +22,21 @@ const TRACKING_PARAM_NAMES = [
   'utm_term',
   'utm_content',
 ]
+const ALLOWED_LINK_PROTOCOLS = ['http:', 'https:']
+const SCHEMELESS_DOMAIN_URL_PATTERN = /^(?:\/\/)?[^./?#:@\s]+(?:\.[^./?#:@\s]+)+(?::\d+)?(?:[/?#]|$)/
+const YOUTUBE_REDIRECT_HOSTS = ['youtube.com', 'www.youtube.com']
+
+/**
+ * @param {URL} url
+ * @returns {string|null|undefined} The q value, null when missing, or undefined for a non-redirect URL.
+ */
+function getYouTubeRedirectTarget(url) {
+  if (!YOUTUBE_REDIRECT_HOSTS.includes(url.hostname) || url.pathname !== '/redirect') {
+    return undefined
+  }
+
+  return url.searchParams.get('q')
+}
 
 if (process.env.SUPPORTS_LOCAL_API) {
   Platform.shim.eval = (data) => {
@@ -390,7 +405,16 @@ async function getHTMLPage(url, kind) {
     {
       headers: {
         // We need to be able to parse the localised strings in the /next response data (e.g. view counts and published dates)
-        'Accept-Language': 'en-US'
+        'Accept-Language': 'en-US',
+        ...(
+          // The "Cookie" header is forbidden by the fetch spec, so we set it as X-Cookie here
+          // and then convert it to the Cookie header in the main process
+          process.env.IS_ELECTRON
+            ? {
+                'X-Cookie': `PREF=tz=${Intl.DateTimeFormat().resolvedOptions().timeZone.replace('/', '.')}`
+              }
+            : {}
+        )
       }
     }
   )
@@ -542,6 +566,47 @@ function buildSessionFromYtConfig(ytConfig, fetchFunc) {
 }
 
 /**
+ * @param {string} videoId
+ * @param {number} signatureTimestamp
+ * @param {string} poToken
+ * @param {string | undefined} [clientOverride]
+ */
+function createPlayerRequestBody(videoId, signatureTimestamp, poToken, clientOverride) {
+  return {
+    videoId,
+    racyCheckOk: true,
+    contentCheckOk: true,
+    playbackContext: {
+      contentPlaybackContext: {
+        vis: 0,
+        splay: false,
+        lactMilliseconds: '-1',
+        signatureTimestamp
+      }
+    },
+    serviceIntegrityDimensions: {
+      poToken
+    },
+    client: clientOverride
+  }
+}
+
+/**
+ * @param {string} videoId
+ */
+function createWatchNextRequestBody(videoId) {
+  return {
+    videoId,
+    racyCheckOk: true,
+    contentCheckOk: true,
+    playbackContext: {
+      vis: 0,
+      lactMilliseconds: '-1'
+    }
+  }
+}
+
+/**
  * @param {string} id
  * @returns {Promise<{
  *   info: import('youtubei.js').YT.VideoInfo,
@@ -615,37 +680,54 @@ export async function getLocalVideoInfo(id) {
   let nextResponse
   const context = htmlExtracts.session.context
 
-  if (htmlExtracts.playerResponse) {
-    totalAdTimeMilliseconds = extractTotalAdTimeMilliseconds(htmlExtracts.playerResponse)
-
-    playerResponse = { data: htmlExtracts.playerResponse }
-  } else {
-    playerResponse = await htmlExtracts.session.actions.execute('/player', {
-      videoId: id,
-      racyCheckOk: true,
-      contentCheckOk: true,
-      playbackContext: {
-        contentPlaybackContext: {
-          vis: 0,
-          splay: false,
-          lactMilliseconds: '-1',
-          signatureTimestamp: player.signature_timestamp
-        }
-      },
-      serviceIntegrityDimensions: {
-        poToken: contentPoToken
-      }
+  if (!htmlExtracts.playerResponse && !htmlExtracts.nextResponse) {
+    const combinedResponse = await htmlExtracts.session.actions.execute('/get_watch', {
+      playerRequest: createPlayerRequestBody(id, player.signature_timestamp, contentPoToken),
+      watchNextRequest: createWatchNextRequestBody(id)
     })
+
+    playerResponse = {
+      data: combinedResponse.data.find(response => {
+        return response.responseType === 'STREAMING_WATCH_RESPONSE_TYPE_PLAYER_RESPONSE'
+      }).playerResponse
+    }
+
+    nextResponse = {
+      data: combinedResponse.data.find(response => {
+        return response.responseType === 'STREAMING_WATCH_RESPONSE_TYPE_WATCH_NEXT_RESPONSE'
+      }).watchNextResponse
+    }
+  } else {
+    if (htmlExtracts.playerResponse) {
+      totalAdTimeMilliseconds = extractTotalAdTimeMilliseconds(htmlExtracts.playerResponse)
+
+      playerResponse = { data: htmlExtracts.playerResponse }
+    } else {
+      const requestBody = createPlayerRequestBody(id, player.signature_timestamp, contentPoToken)
+      playerResponse = await htmlExtracts.session.actions.execute('/player', requestBody)
+    }
+
+    if (htmlExtracts.nextResponse) {
+      nextResponse = { data: htmlExtracts.nextResponse }
+    } else {
+      const requestBody = createWatchNextRequestBody(id)
+      nextResponse = await htmlExtracts.session.actions.execute('/next', requestBody)
+    }
   }
 
-  if (htmlExtracts.nextResponse) {
-    nextResponse = { data: htmlExtracts.nextResponse }
-  } else {
-    nextResponse = await htmlExtracts.session.actions.execute('/next', {
-      videoId: id,
-      racyCheckOk: true,
-      contentCheckOk: true
-    })
+  if (
+    playerResponse?.data &&
+    (playerResponse.data.videoDetails?.isLive ||
+    playerResponse.data.videoDetails?.isPostLiveDvr) &&
+    !playerResponse.data.videoDetails?.isUpcoming &&
+    !playerResponse.data.streamingData?.hlsManifestUrl
+  ) {
+    const mwebRequestBody = createPlayerRequestBody(id, player.signature_timestamp, contentPoToken, 'MWEB')
+
+    const fields = 'streamingData,playabilityStatus,adSlots'
+    const mwebPlayerResponse = await htmlExtracts.session.actions.execute(`/player?$fields=${fields}`, mwebRequestBody)
+
+    Object.assign(playerResponse.data, mwebPlayerResponse.data)
   }
 
   const cpn = Utils.generateRandomString(16)
@@ -996,7 +1078,7 @@ export async function getLocalChannelVideos(id) {
         const innertube = new Innertube(session)
         const playlist = await innertube.getPlaylist(getChannelPlaylistId(channelId, 'videos', 'newest'))
 
-        videos = playlist.items.map(parseLocalPlaylistVideo)
+        videos = parseLocalPlaylistVideos(playlist.items)
       } catch (error) {
         // If the channel doesn't exist, the API call to channel page above would have already failed,
         // so if we get an error that the playlist doesn't exist here, it just means that this artist topic channel
@@ -1154,6 +1236,58 @@ export async function getLocalArtistTopicChannelReleasesContinuation(channel, co
     releases: playlists ? playlists.map(playlist => parseLocalListPlaylist(playlist)) : [],
     continuationData: continuationItem
   }
+}
+
+/**
+ * @param {import('youtubei.js').YTNodes.NavigationEndpoint} endpoint
+ * @returns {string|null}
+ */
+function getDirectChannelAboutUrl(endpoint) {
+  try {
+    let url = new URL(endpoint.toURL())
+
+    const redirectTarget = getYouTubeRedirectTarget(url)
+    if (redirectTarget !== undefined) {
+      if (!redirectTarget) return null
+      const destination = SCHEMELESS_DOMAIN_URL_PATTERN.test(redirectTarget)
+        ? `https://${redirectTarget.replace(/^\/\//, '')}`
+        : redirectTarget
+      url = new URL(destination)
+    }
+
+    return ALLOWED_LINK_PROTOCOLS.includes(url.protocol) ? url.href : null
+  } catch {
+    return null
+  }
+}
+
+/**
+ * @param {import('youtubei.js').YTNodes.ChannelAboutFullMetadata | import('youtubei.js').YTNodes.AboutChannel} about
+ * @returns {{ title: string, url: string, displayUrl: string, iconUrl: string }[]}
+ */
+export function parseLocalChannelAboutLinks(about) {
+  const links = about.primary_links ?? about.metadata?.links ?? []
+  const parsedLinks = []
+
+  for (const link of links) {
+    const endpoint = link.endpoint ?? link.link.endpoint
+    const url = getDirectChannelAboutUrl(endpoint)
+
+    if (!url) {
+      continue
+    }
+
+    const icons = link.icon ?? link.favicon ?? []
+
+    parsedLinks.push({
+      title: link.title.text?.trim() ?? '',
+      url,
+      displayUrl: url.replace(/^https?:\/\/(?:www\.)?/, ''),
+      iconUrl: icons[0]?.url ?? ''
+    })
+  }
+
+  return parsedLinks
 }
 
 /**
@@ -1556,9 +1690,9 @@ export function parseChannelHomeTab(homeTab, channelId, channelName) {
   return shelves
 }
 /**
- * @param {import('youtubei.js').YTNodes.PlaylistVideo|import('youtubei.js').YTNodes.ReelItem|import('youtubei.js').YTNodes.ShortsLockupView} video
+ * @param {import('youtubei.js').YTNodes.PlaylistVideo|import('youtubei.js').YTNodes.ReelItem|import('youtubei.js').YTNodes.LockupView|import('youtubei.js').YTNodes.ShortsLockupView} video
  */
-export function parseLocalPlaylistVideo(video) {
+function parsePlaylistVideo(video) {
   if (video.type === 'ReelItem') {
     /** @type {import('youtubei.js').YTNodes.ReelItem} */
     const short = video
@@ -1664,6 +1798,22 @@ export function parseLocalPlaylistVideo(video) {
 }
 
 /**
+ * @param {(import('youtubei.js').YTNodes.PlaylistVideo|import('youtubei.js').YTNodes.ReelItem|import('youtubei.js').YTNodes.LockupView|import('youtubei.js').YTNodes.ShortsLockupView)[]} videos
+ */
+export function parseLocalPlaylistVideos(videos) {
+  const parsedVideos = []
+
+  for (const video of videos) {
+    const parsedVideo = parsePlaylistVideo(video)
+    if (parsedVideo != null) {
+      parsedVideos.push(parsedVideo)
+    }
+  }
+
+  return parsedVideos
+}
+
+/**
  * @param {import('youtubei.js').YTNodes.Video | import('youtubei.js').YTNodes.Movie} item
  * @param {string} [channelId]
  * @param {string} [channelName]
@@ -1714,6 +1864,7 @@ export function parseLocalListVideo(item, channelId, channelName) {
       title: video.title.text?.trim(),
       author: video.author?.name ?? channelName,
       authorId: (video.author?.id != null && video.author.id !== 'N/A') ? video.author.id : channelId,
+      collaborators: video.author == null ? [] : parseLocalCollaborators(video.author.collaborators),
       viewCount: video.views.text == null ? null : extractNumberFromString(video.views.text),
       published,
       lengthSeconds: isLive ? '' : Utils.timeToSeconds(video.duration.text),
@@ -1776,6 +1927,7 @@ export function parseLocalListVideo(item, channelId, channelName) {
       title: video.title.text?.trim(),
       author: video.author.name !== 'N/A' ? video.author.name : channelName,
       authorId: video.author.id !== 'N/A' ? video.author.id : channelId,
+      collaborators: parseLocalCollaborators(video.author.collaborators),
       description: video.description,
       viewCount,
       published,
@@ -1784,6 +1936,7 @@ export function parseLocalListVideo(item, channelId, channelName) {
       isUpcoming: video.is_upcoming || video.is_premiere,
       premiereDate: video.upcoming,
       isPremiere: video.is_premiere,
+      isMusic: video.thumbnail_overlays.firstOfType(YTNodes.ThumbnailOverlayTimeStatus)?.icon_type === 'MUSIC',
       is4k: video.is_4k,
       is8k: video.badges.some(badge => badge.label === '8K'),
       isNew: video.badges.some(badge => badge.label === 'New'),
@@ -1795,7 +1948,7 @@ export function parseLocalListVideo(item, channelId, channelName) {
   }
 }
 
-const VIEWS_OR_WATCHING_REGEX = /views?|watching|waiting/i
+const VIEWS_OR_WATCHING_REGEX = /\d+(?:\.\d+)?\s?(?:[bkm]|thousand|[bm]illion)?\s(?:views?|watching|waiting)/i
 const VIEWS_IN_NUMBER_ONLY = /^\d+(\.\d)?[bkm]?$/i
 const PREMIERES_TIME_REGEX = /^(premieres|scheduled for) /i
 // Sometimes got `Streamed N (unit) ago`
@@ -1883,6 +2036,7 @@ function parseLockupView(lockupView, channelId = undefined, channelName = undefi
       let liveNow = false
       let isUpcoming = false
       let isPremiere = false
+      let isMusic = false
       let premiereDate
 
       const isMemberOnly = lockupView.metadata.metadata?.metadata_rows.some(row => {
@@ -1911,7 +2065,7 @@ function parseLockupView(lockupView, channelId = undefined, channelName = undefi
             }
           }
         } else {
-          const durationBadge = thumbnailBottomOverlayView.badges.find(badge => /^[\d:]+$/.test(badge.text))
+          const durationBadge = thumbnailBottomOverlayView.badges.find(badge => /^[\d:,]+$/.test(badge.text))
 
           if (durationBadge) {
             lengthSeconds = Utils.timeToSeconds(durationBadge.text)
@@ -1926,6 +2080,10 @@ function parseLockupView(lockupView, channelId = undefined, channelName = undefi
               }
             }
           }
+        }
+
+        if (thumbnailBottomOverlayView.badges.some(badge => badge.icon_name === 'MUSIC')) {
+          isMusic = true
         }
       }
 
@@ -1958,12 +2116,20 @@ function parseLockupView(lockupView, channelId = undefined, channelName = undefi
         author = lockupView.metadata?.metadata?.metadata_rows?.[0]?.metadata_parts?.[0]?.avatar_stack?.text?.text
       }
 
+      let collaborators = []
+      const maybeCollaborators = lockupView.metadata.image?.renderer_context?.command_context?.on_tap?.command?.inline_content?.custom_content?.items
+        .filter(item => item.renderer_context?.command_context?.on_tap?.metadata?.page_type === 'WEB_PAGE_TYPE_CHANNEL')
+      if (maybeCollaborators) {
+        collaborators = parseLocalCollaborators(maybeCollaborators)
+      }
+
       return {
         type: 'video',
         videoId: lockupView.content_id,
         title: lockupView.metadata.title.text?.trim(),
         author,
         authorId: lockupView.metadata.image?.renderer_context?.command_context?.on_tap?.payload.browseId ?? channelId,
+        collaborators,
         viewCount,
         published: calculatePublishedDate(publishedText, liveNow, isUpcoming, premiereDate),
         lengthSeconds,
@@ -1971,6 +2137,7 @@ function parseLockupView(lockupView, channelId = undefined, channelName = undefi
         isUpcoming,
         isStation,
         isPremiere,
+        isMusic,
         premiereDate
       }
     }
@@ -2106,6 +2273,7 @@ export function parseLocalWatchNextVideo(video) {
       title: video.title.text?.trim(),
       author: video.author.name,
       authorId: video.author.id,
+      collaborators: parseLocalCollaborators(video.author.collaborators),
       lengthSeconds: video.duration.seconds
     }
   } else if (video.is(YTNodes.LockupView)) {
@@ -2125,6 +2293,7 @@ export function parseLocalWatchNextVideo(video) {
       title: video.title.text?.trim(),
       author: video.author.name,
       authorId: video.author.id,
+      collaborators: parseLocalCollaborators(video.author.collaborators),
       viewCount: video.view_count == null ? null : extractNumberFromString(video.view_count.text),
       published,
       lengthSeconds: isNaN(video.duration.seconds) ? '' : video.duration.seconds,
@@ -2245,10 +2414,10 @@ export function parseLocalTextRuns(runs, emojiSize = 16, options = { looseChanne
           case 'WEB_PAGE_TYPE_UNKNOWN':
           default: {
             const url = new URL((endpoint.dialog?.type === 'ConfirmDialog' && endpoint.dialog.confirm_button.endpoint.payload.url) || endpoint.payload.url)
-            if (url.hostname === 'www.youtube.com' && url.pathname === '/redirect' && url.searchParams.has('q')) {
+            const redirectTarget = getYouTubeRedirectTarget(url)
+            if (redirectTarget != null) {
               // remove utm tracking parameters
-              const realURLStr = url.searchParams.get('q')
-              const realURL = new URL(realURLStr)
+              const realURL = new URL(redirectTarget)
               let urlChanged = false
 
               TRACKING_PARAM_NAMES.forEach((paramName) => {
@@ -2260,7 +2429,7 @@ export function parseLocalTextRuns(runs, emojiSize = 16, options = { looseChanne
 
               // `searchParams.delete` changes query string unnecessarily
               // Using original unless there is any change
-              parsedRuns.push(urlChanged ? realURL.toString() : realURLStr)
+              parsedRuns.push(urlChanged ? realURL.toString() : redirectTarget)
             } else {
               // this is probably a special YouTube URL like http://www.youtube.com/approachingnirvana
               parsedRuns.push(endpoint.payload.url)
@@ -2337,10 +2506,12 @@ export function parseLocalComment(comment, commentThread = undefined) {
   const replyToken = commentThread ?? null
   let hasOwnerReplied = false
   let hasReplyToken = false
+  let numReplies = 0
 
   if (commentThread?.has_replies) {
     hasOwnerReplied = !!commentThread.comment_replies_data?.has_channel_owner_replied
     hasReplyToken = true
+    numReplies = parseLocalSubscriberCount(commentThread.comment_replies_data?.view_replies?.text || '0')
   }
 
   const commentTextRuns = comment.voice_reply_container?.transcript_text?.runs ?? comment.content?.runs ?? []
@@ -2363,7 +2534,7 @@ export function parseLocalComment(comment, commentThread = undefined) {
     memberIconUrl: comment.member_badge?.url ?? '',
     time: getRelativeTimeFromDate(calculatePublishedDate((comment.published_time ?? '').replace('(edited)', '').trim()) ?? 0, false),
     likes: parseLocalSubscriberCount(comment.like_count?.trim() || '0'),
-    numReplies: hasReplyToken ? parseLocalSubscriberCount(comment.reply_count_a11y ?? '0') : 0
+    numReplies
   }
 }
 
@@ -2519,6 +2690,16 @@ function parseLocalAttachment(attachment) {
     console.error(`Unknown Local community post type: ${attachment.type}`)
     console.error(attachment)
   }
+}
+
+/**
+ * @param {import('youtubei.js').YTNodes.ListItemView[]} collaborators
+ */
+function parseLocalCollaborators(collaborators) {
+  return collaborators.map(collaborator => ({
+    id: collaborator.renderer_context?.command_context?.on_tap?.payload?.browseId,
+    name: collaborator.title?.text,
+  }))
 }
 
 export async function getHashtagLocal(hashtag) {
