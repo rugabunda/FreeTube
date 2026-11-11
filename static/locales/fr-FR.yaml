@@ -509,7 +509,7 @@ Settings:
     Settings File: Fichier de paramètres
     Import Settings: Importer les paramètres
     Export Settings: Exporter les paramètres
-    Settings Tooltip: "Les paramètres spécifiques au système d'exploitation ou à l'utilisateur, ou encore ceux de nature expérimentale, ne peuvent être ni exportés ni importés (par exemple : proxy, lecteur externe, dossier de captures d'écran...)"
+    Settings Tooltip: "Les paramètres spécifiques au système d'exploitation ou à l'utilisateur, ou encore ceux de nature expérimentale, ne peuvent être ni exportés ni importés (par exemple : proxy, lecteur externe, dossier de captures d'écran…)"
     All settings have been successfully imported: Tous les paramètres ont été importés avec succès
     All settings have been successfully exported: Tous les paramètres ont été exportés avec succès
     Setting object has insufficient data, skipping item: Les données de l'objet de configuration sont insuffisantes ; l'élément est ignoré
@@ -565,6 +565,7 @@ Settings:
     Hide Subscriptions Posts: Masquer les posts des abonnements
     Add: Ajouter
     Remove: Supprimer
+    Hide Channel Shows: Masquer l'onglet « Émissions » de la chaîne
   The app needs to restart for changes to take effect. Restart and apply change?: L'application doit être redémarrée pour que les changements prennent effet. Redémarrer et appliquer les changements ?
   Proxy Settings:
     Error getting network information. Is your proxy configured properly?: Erreur lors de l'obtention des informations sur le réseau. Votre proxy est-il correctement configuré ?
@@ -694,6 +695,7 @@ Channel:
     Details: Détails
     Joined: Inscrit(e)
     Location: Emplacement
+    Links: Liens
   Added channel to your subscriptions: Chaîne ajoutée à vos abonnements
   Removed subscription from {count} other channel(s): Abonnement supprimé de {count} autre(s) chaîne(s)
   Channel has been removed from your subscriptions: La chaîne a été retirée de vos abonnements
@@ -727,6 +729,9 @@ Channel:
     Courses: Cours
     This channel does not currently have any courses: Cette chaîne n'a actuellement pas de cours
   View All: Tout afficher
+  Shows:
+    Shows: Émissions
+    This channel does not currently have any shows: Cette chaîne ne propose actuellement aucune émission
 Video:
   Mark As Watched: 'Marquer comme vu'
   Remove From History: 'Supprimer de l''historique'
@@ -828,7 +833,7 @@ Video:
     Playback will resume automatically when your connection comes back: La lecture reprendra automatiquement quand votre connexion reviendra.
     Autoplay is on: La lecture automatique est activée
     Autoplay is off: La lecture automatique est désactivée
-  IP block: YouTube a bloqué votre adresse IP et vous empêche de regarder des vidéos, ou bien cette vidéo contient peut-être du contenu mettant en scène des mineurs, dont YouTube restreint l'accès aux utilisateurs non connectés. S'il s'agit d'un blocage d'adresse IP, essayez d'utiliser un autre VPN ou un autre proxy.
+  IP block: YouTube a bloqué votre adresse IP et vous empêche de regarder des vidéos, ou bien cette vidéo contient peut-être du contenu mettant en scène des mineurs, dont YouTube interdit l'accès pour utilisateurs non connectés. S'il s'agit d'un blocage d'adresse IP, essayez de changer de VPN ou de proxy.
   Unlisted: Non répertorié
   AgeRestricted: Les vidéos soumises à des restrictions d'âge ne peuvent pas être regardées avec FreeTube car elles nécessitent une connexion Google et l'utilisation d'un compte YouTube dont l'âge a été vérifié.
   MembersOnly: Les vidéos réservées aux membres ne peuvent pas être visionnées avec FreeTube, car elles nécessitent une connexion Google et une adhésion payante à la chaîne du vidéaste.
@@ -1017,7 +1022,7 @@ Tooltips:
     Ignore Default Arguments: Ne pas envoyer d'arguments par défaut au lecteur externe en dehors de l'URL de la vidéo (par exemple, la vitesse de lecture, l'URL de la playlist, etc.). Les arguments personnalisés seront toujours transmis.
   Experimental Settings:
     Replace HTTP Cache: Désactive le cache HTTP d'Electron basé sur le disque et active un cache d'image personnalisé en mémoire. Ceci entraînera une augmentation de l'utilisation de la mémoire vive.
-    Disable Hardware Acceleration: Désactive l'accélération matérielle par GPU. Peut résoudre des problèmes d'affichage, mais diminuera probablement les performances.
+    Disable Hardware Acceleration: Désactive l'accélération matérielle par processeur graphique. Peut résoudre des problèmes d'affichage, mais diminuera probablement les performances.
   Distraction Free Settings:
     Hide Channels: Entrez un identifiant de chaîne pour empêcher toutes les vidéos, les playlists et la chaîne elle-même d'apparaître dans les recherches, dans les catégories Tendances, Plus populaires et Recommandés. L'identifiant de la chaîne entré doit correspondre exactement et est sensible aux majuscules.
     Hide Subscriptions Live: Ce paramètre est remplacé par le paramètre « {appWideSetting} » applicable à l'ensemble de l'application, dans la section « {subsection} » de la section « {settingsSection} »

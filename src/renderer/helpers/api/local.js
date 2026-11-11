@@ -1554,6 +1554,21 @@ export function parseLocalListPlaylist(playlist, channelId = undefined, channelN
       videoCount: extractNumberFromString(gridPlaylist.video_count.text),
       isAlbum,
     }
+  } else if (playlist.type === 'GridShow') {
+    /** @type {import('youtubei.js').YTNodes.GridShow} */
+    const gridPlaylist = playlist
+
+    return {
+      type: 'playlist',
+      dataSource: 'local',
+      title: gridPlaylist.title.text,
+      thumbnail: gridPlaylist.thumbnail_renderer.thumbnail.at(0).url,
+      playlistId: gridPlaylist.endpoint.payload.browseId.substring(2),
+      channelName: gridPlaylist.author?.name,
+      channelId: gridPlaylist.author?.id,
+      isShow: true,
+      videoCount: extractNumberFromString(gridPlaylist.thumbnail_overlays?.at(0).text.runs?.at(0)?.text)
+    }
   } else {
     let internalChannelName
     let internalChannelId = null
@@ -1952,7 +1967,7 @@ const VIEWS_OR_WATCHING_REGEX = /\d+(?:\.\d+)?\s?(?:[bkm]|thousand|[bm]illion)?\
 const VIEWS_IN_NUMBER_ONLY = /^\d+(\.\d)?[bkm]?$/i
 const PREMIERES_TIME_REGEX = /^(premieres|scheduled for) /i
 // Sometimes got `Streamed N (unit) ago`
-const PUBLISH_TIME_REGEX = /^(streamed )?\d+ ?\w+? ago/i
+const PUBLISH_TIME_REGEX = /^(streamed\s)?\d+\s?\w+?\sago/i
 
 /**
  * @param {string | undefined} text
@@ -1989,6 +2004,7 @@ function isPublishTimeText(text) {
 function parseLockupView(lockupView, channelId = undefined, channelName = undefined) {
   switch (lockupView.content_type) {
     case 'ALBUM':
+    case 'SHOW':
     case 'PLAYLIST':
     case 'COURSE':
     case 'PODCAST': {
@@ -2012,6 +2028,7 @@ function parseLockupView(lockupView, channelId = undefined, channelName = undefi
 
       const isCourse = lockupView.content_type === 'COURSE' || thumbnailOverlayBadgeView.badges.some(e => e.icon_name === 'COURSE')
       const isAlbum = lockupView.content_type === 'ALBUM' || thumbnailOverlayBadgeView.badges.some(e => e.icon_name === 'music')
+      const isShow = lockupView.content_type === 'SHOW'
 
       return {
         type: 'playlist',
@@ -2025,6 +2042,7 @@ function parseLockupView(lockupView, channelId = undefined, channelName = undefi
         isPodcast: lockupView.content_type === 'PODCAST',
         isAlbum,
         isCourse,
+        isShow,
       }
     }
     case 'SHORT':

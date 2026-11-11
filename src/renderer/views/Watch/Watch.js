@@ -4,7 +4,7 @@ import { mapActions, mapMutations } from 'vuex'
 import shaka from 'shaka-player'
 import { Utils, YTNodes } from 'youtubei.js'
 import FtLoader from '../../components/FtLoader/FtLoader.vue'
-import FtShakaVideoPlayer from '../../components/ft-shaka-video-player/ft-shaka-video-player.vue'
+import FtShakaVideoPlayer from '../../components/FtShakaVideoPlayer/FtShakaVideoPlayer.vue'
 import WatchVideoInfo from '../../components/WatchVideoInfo/WatchVideoInfo.vue'
 import WatchVideoChapters from '../../components/WatchVideoChapters/WatchVideoChapters.vue'
 import WatchVideoDescription from '../../components/WatchVideoDescription/WatchVideoDescription.vue'
@@ -516,7 +516,8 @@ export default defineComponent({
         const playabilityStatus = result.playability_status
         this.playabilityStatus = playabilityStatus.status
 
-        if (playabilityStatus.status === 'LOGIN_REQUIRED' && playabilityStatus.error_screen?.reason?.text === 'Private video') {
+        if (playabilityStatus.status === 'LOGIN_REQUIRED' &&
+            (playabilityStatus.error_screen?.reason?.text === 'Private video' || playabilityStatus.reason === 'Private video')) {
           // Private videos cannot be played in FreeTube, as they require to be logged as the owner of the video
           // so there is no point continuing or trying any other backends as it will always fail
           this.errorMessage = this.t('Video.Private')
