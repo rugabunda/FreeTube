@@ -493,7 +493,6 @@ Settings:
     All playlists has been successfully exported: Wszystkie playlisty pomyślnie wyeksportowano
     Playlist insufficient data: Niewystarczająca ilość danych dla playlisty „{playlist}”. Pomijam element
     Import Playlists: Zaimportuj playlisty
-    All playlists has been successfully imported: Wszystkie playlisty pomyślnie zaimportowano
     History File: Plik historii
     Playlist File: Plik playlist
     Subscription File: Plik subskrypcji
@@ -638,6 +637,9 @@ Settings:
   SABR:
     Label: Włącz SABR jako back-end dla DASH-a
     Tooltip: W przyszłości SABR będzie jedynym back-endem DASH-a i nie będzie można go wyłączyć. Ten przełącznik został wprowadzony na wypadek, gdyby wczesna implementacja powodowała problemy.
+  Search Settings: Ustawienia wyszukiwania
+  Settings found: Znaleziono 1 ustawienie | Znaleziono {count} ustawień
+  No Matching Settings: Nie znaleziono wyników pasujących do Twojego wyszukiwania.
 About:
   #On About page
   About: 'O projekcie'

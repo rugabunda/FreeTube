@@ -500,7 +500,6 @@ Settings:
     Export Playlists: Lejátszási listák exportálása
     Import Playlists: Lejátszási listák importálása
     All playlists has been successfully exported: Az összes lejátszási lista exportálása sikeresen megtörtént
-    All playlists has been successfully imported: Az összes lejátszási lista importálása sikeresen megtörtént
     Subscription File: Feliratkozás-fájl
     History File: Előzményfájl
     Playlist File: Lejátszási lista fájl
@@ -574,6 +573,7 @@ Settings:
     Add: Hozzáadás
     Remove: Eltávolítás
     Hide Channel Shows: A „Műsorok” lap elrejtése a csatornán
+    More Items Count: +{count} további…
   The app needs to restart for changes to take effect. Restart and apply change?: Az alkalmazásnak újra kell indulnia, hogy a változtatások életbe lépjenek. Induljon újra és alkalmazza a módosítást?
   Proxy Settings:
     City: Helység
@@ -646,6 +646,9 @@ Settings:
   SABR:
     Label: SABR engedélyezése mint DASH-háttérprogram
     Tooltip: A SABR lesz az egyetlen DASH-háttérprogram a jövőbeli kiadásokban, és nem lehet majd letiltani. Ez a kapcsoló arra az esetre szolgál, ha a korai megvalósítása helyrehozhatatlan problémákat okozna.
+  Search Settings: Keresési beállítások
+  Settings found: 1 beállítás található | {count} beállítás található
+  No Matching Settings: Nem található a keresésnek megfelelő beállítás.
 About:
   #On About page
   About: 'Névjegy'
