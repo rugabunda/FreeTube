@@ -27,6 +27,7 @@ import {
   showToast
 } from '../../helpers/utils'
 import {
+  generateFreshContentPoToken,
   getLocalVideoInfo,
   mapLocalLegacyFormat,
   parseLocalSubscriberCount,
@@ -49,6 +50,7 @@ import { useI18n } from 'vue-i18n'
  * @typedef {{
  *   url: string,
  *   poToken: string,
+ *   refreshPoToken?: () => Promise<string | null>,
  *   ustreamerConfig: string,
  *   clientInfo: {
  *     clientName: number,
@@ -1671,6 +1673,7 @@ export default defineComponent({
       this.sabrData = {
         url: url.toString(),
         poToken,
+        refreshPoToken: () => generateFreshContentPoToken(this.videoId),
         ustreamerConfig: videoInfo.player_config.media_common_config.media_ustreamer_request_config.video_playback_ustreamer_config,
         clientInfo
       }

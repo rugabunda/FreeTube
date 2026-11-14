@@ -524,6 +524,28 @@ async function getWatchHTMLWatchPage(videoId, fetchFunc) {
 }
 
 /**
+ * Generate a fresh, content-bound PO token for the given video, independent of the
+ * one attached to the original player response. Used to recover from a SABR stream
+ * that YouTube has marked as needing attestation without rebuilding the player.
+ * @param {string} videoId
+ * @returns {Promise<string | null>} the fresh PO token, or null when unavailable
+ */
+export async function generateFreshContentPoToken(videoId) {
+  if (!process.env.IS_ELECTRON) {
+    return null
+  }
+
+  const htmlExtracts = await getWatchHTMLWatchPage(videoId, fetch)
+
+  return await window.ftElectron.generatePoToken(
+    videoId,
+    JSON.stringify(htmlExtracts.session.context),
+    JSON.stringify(htmlExtracts.initialAttestationData),
+    JSON.stringify(htmlExtracts.ytConfig)
+  )
+}
+
+/**
  * @param {object} ytConfig
  * @param {(input, init) => Promise<Response>} fetchFunc
  */
